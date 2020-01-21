@@ -1,12 +1,12 @@
 import * as React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Editor from './Editor';
+import SpielEditor from './SpielEditor/SpielEditor';
 
 
 const App: React.FC = () => {
     return (
         <>
-            <Editor />
+            <SpielEditor />
         </>
     );
 }
