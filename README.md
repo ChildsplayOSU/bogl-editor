@@ -4,7 +4,7 @@ Front-end for Spiel language.
 
 This project is bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-Uses react-bootstrap.
+Uses [react-bootstrap](https://react-bootstrap.github.io/) and [CodeMirror](https://codemirror.net/).
 
 ## Installation
 
