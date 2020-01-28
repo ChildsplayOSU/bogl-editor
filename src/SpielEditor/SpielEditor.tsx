@@ -1,27 +1,36 @@
 import * as React from 'react';
-import Editor from 'react-simple-code-editor';
 import './SpielEditor.css';
-import { highlight, languages } from 'prismjs/components/prism-core';
-import 'prismjs/components/prism-clike';
-import 'prismjs/components/prism-javascript';
-import 'prismjs/themes/prism.css';
+import CodeMirror from 'react-codemirror';
+import 'codemirror/lib/codemirror.css';
+import 'codemirror/theme/midnight.css';
+import 'codemirror/mode/markdown/markdown';
+
+type EditorConfig = {
+    tabSize: number,
+    lineNumbers: boolean,
+    mode: string,
+    theme: string
+}
+
 
 const SpielEditor: React.FC = () => { 
 
     let [code, setCode] = React.useState('');
 
-     
+
+    let option: EditorConfig = {
+        tabSize: 3,
+        lineNumbers: true,
+        mode: 'markdown',
+        theme: 'midnight'
+    };
+
     return (
         <>
-            <Editor
+            <CodeMirror
                 value={code}
-                onValueChange={code => setCode(code)}
-                highlight={code => highlight(code, languages.js)}
-                padding={10}
-                style={{
-                    fontFamily: '"Fira code", "Fira Mono", monospace',
-                    fontSize: 12,
-                }}
+                onChange={setCode}
+                options={option}
             />
             <p>
             {code}
