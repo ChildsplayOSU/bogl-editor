@@ -4,17 +4,23 @@ import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import SpielEditor from './Editor/SpielEditor';
 import SpielNavbar from './Navbar/SpielNavbar';
 import Home from './HomePage/Home';
+import Demo from './Demo/Demo';
 
 const App: React.FC = () => {
 
-    //let [userTheme, setTheme] = React.useState('midnight');
+    let [editorTheme, setEditorTheme] = React.useState('default');
+
+    function setTheme(theme: string) {
+        console.log(theme);
+        setEditorTheme(theme);
+    }
 
     return (
         <Router>
-            <SpielNavbar />
-
-            <Route exact path="/" component={Home} />
-            <Route exact path="/free" component={SpielEditor} />
+            <SpielNavbar setTheme={ setTheme } />
+            <Route exact path="/" component={ Home } />
+            <Route exact path="/free" render={(props) => <SpielEditor {...props} theme={ editorTheme } setTheme={setEditorTheme} />} />
+            <Route exact path="/demo" render={(props) => <Demo {...props} theme={ editorTheme } setTheme={setEditorTheme} />} />
         </Router>
     );
 }
