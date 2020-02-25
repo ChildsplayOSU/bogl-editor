@@ -9,18 +9,18 @@ import './SpielNavbar.css';
 const SpielNavbar = ({ setTheme }) => {
 
     const themes: Array<string> = ["midnight", "default", "gruvbox-dark", "solarized", "nord"]; 
-   
+
     function getThemes() {
         let navitems: Array<JSX.Element> = [];
         for (let i = 0; i < themes.length; i++) {
-            navitems.push(<NavDropdown.Item onClick={ setTheme(themes[i]) }>{ themes[i] }</NavDropdown.Item>);
+            navitems.push(<NavDropdown.Item onClick={() => setTheme(themes[i]) }>{ themes[i] }</NavDropdown.Item>);
         }
         return navitems; 
     }
 
     return (
     
-        <Navbar bg="danger" variant="dark" expand="lg" onClick = { setTheme("midnight") }>
+        <Navbar bg="danger" variant="dark" expand="lg" fixed="top">
             <Navbar.Brand>Spiel Language</Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">

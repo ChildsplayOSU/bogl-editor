@@ -8,10 +8,9 @@ import Demo from './Demo/Demo';
 
 const App: React.FC = () => {
 
-    let [editorTheme, setEditorTheme] = React.useState('default');
+    let [editorTheme, setEditorTheme] = React.useState('nord');
 
     function setTheme(theme: string) {
-        console.log(theme);
         setEditorTheme(theme);
     }
 
@@ -19,8 +18,8 @@ const App: React.FC = () => {
         <Router>
             <SpielNavbar setTheme={ setTheme } />
             <Route exact path="/" component={ Home } />
-            <Route exact path="/free" render={(props) => <SpielEditor {...props} theme={ editorTheme } setTheme={setEditorTheme} />} />
-            <Route exact path="/demo" render={(props) => <Demo {...props} theme={ editorTheme } setTheme={setEditorTheme} />} />
+            <Route exact path="/free" render={(props) => <SpielEditor {...props} editorTheme={ editorTheme } setTheme={ setEditorTheme } />} />
+            <Route exact path="/demo" render={(props) => <Demo {...props} theme={ editorTheme } setTheme={ setEditorTheme } />} />
         </Router>
     );
 }
