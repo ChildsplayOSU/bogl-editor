@@ -3,6 +3,8 @@ import {Controlled as CodeMirror} from 'react-codemirror2';
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/mode/haskell/haskell';
 
+import Container from 'react-bootstrap/Container';
+
 import 'codemirror/theme/midnight.css';
 import 'codemirror/theme/gruvbox-dark.css';
 import 'codemirror/theme/solarized.css';
@@ -22,6 +24,7 @@ const SpielEditor = ({ editorTheme }) => {
     return (
         <>
             <CodeMirror 
+                className="move-down"
                 value={code}
                 onBeforeChange={(editor, data, value) => {
                     updateCode(value);

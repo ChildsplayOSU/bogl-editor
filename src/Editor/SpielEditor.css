@@ -2,3 +2,8 @@
     width: 100%;
     height: 100%;
 }
+
+.move-down {
+    margin-top: 55px;
+    position: fixed;
+}

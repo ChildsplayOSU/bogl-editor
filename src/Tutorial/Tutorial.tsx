@@ -8,6 +8,7 @@ import 'codemirror/theme/gruvbox-dark.css';
 import 'codemirror/theme/nord.css';
 import 'codemirror/theme/solarized.css';
 
+import '../Editor/SpielEditor.css';
 import './Tutorial.css';
 
 const Tutorial = ({ editorTheme }) => { 
@@ -26,6 +27,7 @@ const Tutorial = ({ editorTheme }) => {
     return (
         <>
             <CodeMirror 
+                className="move-down"
                 value={code}
                 onBeforeChange={(editor, data, value) => {
                     updateCode(value);
