@@ -8,7 +8,7 @@ import './SpielNavbar.css';
 
 const SpielNavbar = ({ setTheme }) => {
 
-    const themes: Array<string> = ["midnight", "default", "gruvbox-dark", "solarized", "nord"]; 
+    const themes: Array<string> = ["default", "midnight", "gruvbox-dark", "solarized", "nord"]; 
 
     function getThemes() {
         let navitems: Array<JSX.Element> = [];
@@ -19,7 +19,6 @@ const SpielNavbar = ({ setTheme }) => {
     }
 
     return (
-    
         <Navbar bg="danger" variant="dark" expand="lg" fixed="top">
             <Navbar.Brand>Spiel Language</Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -27,7 +26,7 @@ const SpielNavbar = ({ setTheme }) => {
                 <Nav className="mr-auto">
                     <Nav.Link as={Link} to="/" exact>Home</Nav.Link>
                     <Nav.Link as={Link} to="/free">Free Editor</Nav.Link>
-                    <Nav.Link as={Link} to="/demo">Demo</Nav.Link>
+                    <Nav.Link as={Link} to="/tutorial">Tutorial</Nav.Link>
                     <NavDropdown title="Themes" id="basic-nav-dropdown">
                         {getThemes()}
                     </NavDropdown>

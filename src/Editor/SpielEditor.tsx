@@ -17,7 +17,6 @@ const SpielEditor = ({ editorTheme }) => {
 
     function updateCode(c: string) {
         setCode(c);
-        console.log(editorTheme);
     };
 
     return (
