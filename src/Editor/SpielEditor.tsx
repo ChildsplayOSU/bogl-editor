@@ -12,20 +12,19 @@ import 'codemirror/theme/nord.css';
 
 import './SpielEditor.css';
 
-const SpielEditor = ({ editorTheme }) => { 
+const SpielEditor = (props) => { 
 
-    let [code, setCode] = React.useState('');
     let [editor, setEditor] = React.useState();
 
     function updateCode(c: string) {
-        setCode(c);
+        props.setCode(c);
     };
 
     return (
         <>
             <CodeMirror 
                 className="move-down"
-                value={code}
+                value={ props.code }
                 onBeforeChange={(editor, data, value) => {
                     updateCode(value);
                 }}
@@ -33,7 +32,7 @@ const SpielEditor = ({ editorTheme }) => {
                     tabSize: 3,
                     lineNumbers: true,
                     mode: 'haskell',
-                    theme: editorTheme, 
+                    theme: props.editorTheme, 
                     readOnly: false
                 }}
                 editorDidMount={editor => { setEditor(editor); }}

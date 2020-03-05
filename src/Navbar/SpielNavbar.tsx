@@ -6,16 +6,24 @@ import { BrowserRouter as NavLink, Link } from "react-router-dom";
 
 import './SpielNavbar.css';
 
-const SpielNavbar = ({ setTheme }) => {
+const SpielNavbar = (props) => {
 
     const themes: Array<string> = ["default", "midnight", "gruvbox-dark", "solarized", "nord"]; 
 
     function getThemes() {
         let navitems: Array<JSX.Element> = [];
         for (let i = 0; i < themes.length; i++) {
-            navitems.push(<NavDropdown.Item onClick={() => setTheme(themes[i]) }>{ themes[i] }</NavDropdown.Item>);
+            navitems.push(<NavDropdown.Item onClick={() => props.setTheme(themes[i]) }>{ themes[i] }</NavDropdown.Item>);
+
         }
         return navitems; 
+    }
+
+    function getRunButton() {
+        //if (props.run === true) {
+            return <Nav.Link onClick={props.modal}>Run</Nav.Link>;
+        //}
+        //return <></>;
     }
 
     return (
@@ -30,6 +38,7 @@ const SpielNavbar = ({ setTheme }) => {
                     <NavDropdown title="Themes" id="basic-nav-dropdown">
                         {getThemes()}
                     </NavDropdown>
+                    <Nav.Link onClick={props.modal}>Run</Nav.Link>;
                 </Nav>
             </Navbar.Collapse>
         </Navbar>
