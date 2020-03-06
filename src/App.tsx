@@ -17,28 +17,45 @@ const App: React.FC = () => {
     let [code, setCode] = React.useState('');
     let [modalShow, setModalShow] = React.useState(false);
 
+    // Change to Backend API
+    const SPIEL_API = "https://jsonplaceholder.typicode.com/todos/1";
+
     function setTheme(theme: string) {
         setEditorTheme(theme);
     }
 
-    function setRun () {
+    function setRun() {
         return createBrowserHistory().location.pathname === "/free" || createBrowserHistory().location.pathname === "/tutorial";
     }
 
-    function showModal() {
-        console.log("show");
+    function parse_response(res: JSON) {
+        // Board
+        // Value
+        // Game Result
+        // Parse Error
+        // Type Error
+    }
+
+    function run() {
         setModalShow(true);
+        fetch(
+            SPIEL_API, {
+                method: "GET"
+        }).then(res => res.json()).then((result) => {
+            console.log(result);
+            parse_response(result);
+        });
     }
 
     return (
         <>
             <Router>
-                <SpielNavbar modal={showModal} setTheme={ setTheme } />
+                <SpielNavbar modal={run} setTheme={ setTheme } />
                 <Route exact path="/" component={ Home } />
                 <Route exact path="/free" render={(props) => <SpielEditor {...props} editorTheme={ editorTheme } code={ code } setCode={ setCode }/>} />
                 <Route exact path="/tutorial" render={(props) => <Tutorial {...props} editorTheme={ editorTheme } />} />
             </Router>
-            <Run show={modalShow} onHide={() => setModalShow(false)}/>
+            <Run runCode={modalShow} code={code} show={modalShow} onHide={() => setModalShow(false)}/>
         </>
     );
 }
