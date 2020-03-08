@@ -1,29 +1,41 @@
 import * as React from 'react';
-import * as CodeMirror from 'react-codemirror';
+import {Controlled as CodeMirror} from 'react-codemirror2';
 import 'codemirror/lib/codemirror.css';
-import 'codemirror/theme/midnight.css';
 import 'codemirror/mode/haskell/haskell';
+
+import Container from 'react-bootstrap/Container';
+
+import 'codemirror/theme/midnight.css';
+import 'codemirror/theme/gruvbox-dark.css';
+import 'codemirror/theme/solarized.css';
+import 'codemirror/theme/nord.css';
+
 import './SpielEditor.css';
 
-const SpielEditor = ({ theme }) => { 
+const SpielEditor = (props) => { 
 
-    let [code, setCode] = React.useState('');
+    let [editor, setEditor] = React.useState();
 
-    function updateCode(x: string) {
-        setCode(x);
+    function updateCode(c: string) {
+        props.setCode(c);
     };
 
     return (
         <>
-            <CodeMirror
-                value={code}
-                onChange={updateCode}
+            <CodeMirror 
+                className="move-down"
+                value={ props.code }
+                onBeforeChange={(editor, data, value) => {
+                    updateCode(value);
+                }}
                 options={{
                     tabSize: 3,
                     lineNumbers: true,
                     mode: 'haskell',
-                    theme: theme 
+                    theme: props.editorTheme, 
+                    readOnly: false
                 }}
+                editorDidMount={editor => { setEditor(editor); }}
             />
         </>
     );
