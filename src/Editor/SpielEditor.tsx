@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {Controlled as CodeMirror} from 'react-codemirror2';
 import 'codemirror/lib/codemirror.css';
+//import '../SpielHighlight';
 import 'codemirror/mode/haskell/haskell';
 
 import Container from 'react-bootstrap/Container';
@@ -23,12 +24,12 @@ const SpielEditor = (props) => {
     return (
         <>
             <CodeMirror 
-                className="move-down"
                 value={ props.code }
                 onBeforeChange={(editor, data, value) => {
                     updateCode(value);
                 }}
                 options={{
+                    lineWrapping: true,
                     tabSize: 3,
                     lineNumbers: true,
                     mode: 'haskell',

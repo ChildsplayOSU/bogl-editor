@@ -1,6 +1,4 @@
 import * as React from 'react';
-import Modal from 'react-bootstrap/Modal';
-import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 
 
@@ -19,7 +17,6 @@ class SpielServerRequest {
     static save(fileName,content) {
         return fetch(SpielServerRequest.SPIEL_API+'/save', {
             method: 'POST',
-            mode: 'no-cors',     
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
@@ -34,7 +31,6 @@ class SpielServerRequest {
     static read(fileName) {
         return fetch(SpielServerRequest.SPIEL_API+'/read', {
             method: 'POST',
-            mode: 'no-cors',     
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
@@ -62,7 +58,7 @@ class SpielServerRequest {
     static runCmds(fileToUse,commands) {
         return fetch(SpielServerRequest.SPIEL_API+'/runCmds', {
             method: 'POST',
-            mode: 'no-cors',     
+            //mode: 'no-cors',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
@@ -100,18 +96,10 @@ const Run = (props) => {
     }
 
     return (
-        <Modal {...props} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
-            <Modal.Body>
-                <Form.Group controlId="exampleForm.ControlTextarea1">
-                    <Form.Label>Input</Form.Label>
-                    <Form.Control value={input} as="textarea" onChange={handleChange} rows="1"/>
-                </Form.Group>
-            </Modal.Body>
-            <Modal.Footer>
-                <Button onClick={run}>Run</Button>
-                <Button onClick={props.onHide}>Close</Button>
-            </Modal.Footer>
-        </Modal>
+        <Form.Group controlId="exampleForm.ControlTextarea1">
+            <Form.Label>Input</Form.Label>
+            <Form.Control value={input} as="textarea" onChange={handleChange} rows="1"/>
+        </Form.Group>
     )
 }
 

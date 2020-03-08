@@ -9,6 +9,9 @@ import Home from './HomePage/Home';
 import Tutorial from './Tutorial/Tutorial';
 import { Run, SpielServerRequest } from './Run/Run';
 
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Container from 'react-bootstrap/Container';
 
 const App: React.FC = () => {
 
@@ -100,19 +103,31 @@ const App: React.FC = () => {
                     .then((result) => {
                         console.log("Run successful");
                         console.log(result);
+                }).catch((error) => {
+                    console.log("Caught error: " + error);
                 });
+            }).catch((error) => {
+                console.log("Caught error: " + error);
         });
+        return;
     }
 
+    //<Route exact path="/" component={ Home } />
+    //<Run commands={commands} runCode={runCode} code={code} show={modalShow} onHide={() => setModalShow(false)}/>
     return (
         <>
             <Router>
                 <SpielNavbar modal={runButtonClicked} setTheme={ setTheme } />
-                <Route exact path="/" component={ Home } />
-                <Route exact path="/free" render={(props) => <SpielEditor {...props} editorTheme={ editorTheme } code={ code } setCode={ setCode }/>} />
-                <Route exact path="/tutorial" render={(props) => <Tutorial {...props} editorTheme={ editorTheme } />} />
+                <Row noGutters={true}>
+                    <Col className="move-down tall" sm={8} >
+                        <Route className="CodeMirror" exact path="/" render={(props) => <SpielEditor {...props} editorTheme={ editorTheme } code={ code } setCode={ setCode }/>} />
+                        <Route exact path="/tutorial" render={(props) => <Tutorial {...props} editorTheme={ editorTheme } />} />
+                    </Col>
+                    <Col className="move-down" sm={4}>
+                        <Run commands={commands} runCode={runCode} code={code} />         
+                    </Col>
+                </Row>
             </Router>
-            <Run commands={commands} runCode={runCode} code={code} show={modalShow} onHide={() => setModalShow(false)}/>
         </>
     );
 }
