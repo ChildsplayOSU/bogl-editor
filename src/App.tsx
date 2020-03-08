@@ -17,6 +17,7 @@ const App: React.FC = () => {
     let [runButton, setRunButton] = React.useState(false);
     let [code, setCode] = React.useState('');
     let [modalShow, setModalShow] = React.useState(false);
+    let [commands, setCommands] = React.useState(Array<string>());
 
     function setTheme(theme: string) {
         setEditorTheme(theme);
@@ -84,8 +85,22 @@ const App: React.FC = () => {
         setModalShow(true);         
     }
 
-    function runCode() {
-        console.log("run button clicked");
+    function runCode(){
+        console.log("Saving file...");
+        console.log(commands);
+        SpielServerRequest.save("TEMP",code)
+            .then(res => res.json())
+            .then((result) => {
+                console.log("Save successful");
+                console.log(result);
+                console.log("Running file...");
+                SpielServerRequest.runCmds("TEMP", commands)
+                    .then(res => res.json())
+                    .then((result) => {
+                        console.log("Run successful");
+                        console.log(result);
+                });
+        });
     }
 
     return (
@@ -96,7 +111,7 @@ const App: React.FC = () => {
                 <Route exact path="/free" render={(props) => <SpielEditor {...props} editorTheme={ editorTheme } code={ code } setCode={ setCode }/>} />
                 <Route exact path="/tutorial" render={(props) => <Tutorial {...props} editorTheme={ editorTheme } />} />
             </Router>
-            <Run runCode={runCode} code={code} show={modalShow} onHide={() => setModalShow(false)}/>
+            <Run commands={commands} runCode={runCode} code={code} show={modalShow} onHide={() => setModalShow(false)}/>
         </>
     );
 }

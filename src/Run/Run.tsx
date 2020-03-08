@@ -85,16 +85,26 @@ class SpielServerRequest {
 
 const Run = (props) => {
     let [input,setInput] = React.useState('');
+
+    function run() {
+        props.commands.push(input);
+        props.runCode();
+    }
+
+    function handleChange(e: any) {
+        setInput(e.target.value);
+    }
+
     return (
 	<Modal {...props} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
             <Modal.Body>
                 <Form.Group controlId="exampleForm.ControlTextarea1">
                     <Form.Label>Input</Form.Label>
-                    <Form.Control as="textarea" rows="1" value={input}/>
+                    <Form.Control as="textarea" onChange={handleChange} rows="1"/>
                 </Form.Group>
             </Modal.Body>
             <Modal.Footer>
-                <Button onClick={props.runCode}>Run</Button>
+                <Button onClick={run}>Run</Button>
                 <Button onClick={props.onHide}>Close</Button>
             </Modal.Footer>
 	</Modal>
