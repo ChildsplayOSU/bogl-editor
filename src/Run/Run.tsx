@@ -1,6 +1,7 @@
 import * as React from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
 
 
 // Class for representing requests
@@ -83,12 +84,17 @@ class SpielServerRequest {
 }
 
 const Run = (props) => {
+    let [input,setInput] = React.useState('');
     return (
 	<Modal {...props} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
             <Modal.Body>
-
+                <Form.Group controlId="exampleForm.ControlTextarea1">
+                    <Form.Label>Input</Form.Label>
+                    <Form.Control as="textarea" rows="1" value={input}/>
+                </Form.Group>
             </Modal.Body>
             <Modal.Footer>
+                <Button onClick={props.runCode}>Run</Button>
                 <Button onClick={props.onHide}>Close</Button>
             </Modal.Footer>
 	</Modal>
