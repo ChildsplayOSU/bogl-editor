@@ -88,6 +88,7 @@ const App: React.FC = () => {
     function runCode(){
         console.log("Saving file...");
         console.log(commands);
+        console.log(code);
         SpielServerRequest.save("TEMP",code)
             .then(res => res.json())
             .then((result) => {
