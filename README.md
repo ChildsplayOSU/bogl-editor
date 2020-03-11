@@ -4,14 +4,14 @@ Front-end for Spiel language.
 
 This project is bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-Uses:
+Libraries used:
 * [react-bootstrap](https://react-bootstrap.github.io/)
 * [CodeMirror](https://codemirror.net/)
 * [react-router](https://github.com/ReactTraining/react-router)
 
 ## Installation
 
-First, run `npm install`. To run, use `npm start`. To deploy, use `npm build`.
+Requires ability to run [Spiel-Lang](https://github.com/The-Code-In-Sheep-s-Clothing/Spiel-Lang.git). To install, run `npm run setup`. Then, to start the front-end and back-end servers, run `npm run startProduction`. 
 
 ## Learn More
 
