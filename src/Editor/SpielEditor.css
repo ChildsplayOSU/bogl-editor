@@ -11,3 +11,8 @@
 .tall {
     height: 100vh;
 }
+
+.CodeMirror {
+    font-family: Courier-New, monospace;
+    font-size: 16px;
+}

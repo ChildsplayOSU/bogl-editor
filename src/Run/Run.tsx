@@ -1,5 +1,6 @@
-import * as React from 'react';
-import Form from 'react-bootstrap/Form';
+import React, { useState, useEffect } from 'react';
+// import Form from 'react-bootstrap/Form';
+import Terminal from 'terminal-in-react';
 
 
 // Class for representing requests
@@ -82,25 +83,59 @@ class SpielServerRequest {
 
 }
 
+let x = "";
+
 const Run = (props) => {
-    let [input,setInput] = React.useState('');
 
-    function run() {
-        props.commands.push(input);
-        props.runCode();
-        setInput("");
-    }
+    let [gameHistory, setGameHistory] = React.useState([]);
 
-    function handleChange(e: any) {
-        setInput(e.target.value);
+    // function run() {
+    //     props.commands.push(input);
+    //     props.runCode();
+    //     setInput("");
+    // }
+
+    // function handleChange(e: any) {
+    //     setInput(e.target.value);
+    // }
+    //
+
+    x = props.code;
+
+    function save(args, print) {
+        if (args._.length != 1) {
+            print("Error: Save expects only one argument: the file to be saved.");
+        } else {
+            props.save(args._[0], print, x);
+        }
     }
 
     return (
-        <Form.Group controlId="exampleForm.ControlTextarea1">
-            <Form.Label>Input</Form.Label>
-            <Form.Control value={input} as="textarea" onChange={handleChange} rows="1"/>
-        </Form.Group>
+        <Terminal
+            color='white'
+            backgroundColor='black'
+            barColor='black'
+            style={{ fontSize: "1.1em" }}
+            showActions={false}
+            commands={{
+                save: {
+                    method: (args, print, runCommand) => save(args, print),
+                    options: [
+                        {
+                            name: 'file',
+                            description: 'File to be run',
+                            defaultValue: '',
+                        },
+                    ],
+                },
+            }}
+        />
     )
+        // <Form.Group controlId="exampleForm.ControlTextarea1">
+        //     <Form.Label>Input</Form.Label>
+        //     <Form.Control value={input} as="textarea" onChange={handleChange} rows="1"/>
+        // </Form.Group>
+
 }
 
 export {Run,SpielServerRequest};

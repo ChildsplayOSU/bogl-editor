@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState, useEffect } from 'react';
 import {Controlled as CodeMirror} from 'react-codemirror2';
 import 'codemirror/lib/codemirror.css';
 //import '../SpielHighlight';
@@ -17,16 +17,16 @@ const SpielEditor = (props) => {
 
     let [editor, setEditor] = React.useState();
 
-    function updateCode(c: string) {
-        props.setCode(c);
+    function updateCode(value: string) {
+        props.updateCode(value);
     };
 
     return (
         <>
             <CodeMirror 
-                value={ props.code }
+                value={props.code}
                 onBeforeChange={(editor, data, value) => {
-                    updateCode(value);
+                    updateCode(value); 
                 }}
                 options={{
                     lineWrapping: true,
