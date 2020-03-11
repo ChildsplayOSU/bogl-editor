@@ -83,31 +83,30 @@ class SpielServerRequest {
 
 }
 
-let x = "";
+let code = "";
 
 const Run = (props) => {
 
     let [gameHistory, setGameHistory] = React.useState([]);
+    let [filename, setFileName] = React.useState("");
 
-    // function run() {
-    //     props.commands.push(input);
-    //     props.runCode();
-    //     setInput("");
-    // }
-
-    // function handleChange(e: any) {
-    //     setInput(e.target.value);
-    // }
-    //
-
-    x = props.code;
+    code = props.code;
 
     function save(args, print) {
         if (args._.length != 1) {
             print("Error: Save expects only one argument: the file to be saved.");
         } else {
-            props.save(args._[0], print, x);
+            let filename: string = args._[0];
+            //console.log(code);
+            SpielServerRequest.save(filename, code)
+                .then(res => res.json())
+                .then((result) => {
+                    print(filename + " saved successfully!");
+                }).catch((error) => {
+                    print("Error: " + error);
+                });
         }
+        return;
     }
 
     return (
@@ -131,11 +130,6 @@ const Run = (props) => {
             }}
         />
     )
-        // <Form.Group controlId="exampleForm.ControlTextarea1">
-        //     <Form.Label>Input</Form.Label>
-        //     <Form.Control value={input} as="textarea" onChange={handleChange} rows="1"/>
-        // </Form.Group>
-
 }
 
 export {Run,SpielServerRequest};

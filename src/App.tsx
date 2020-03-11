@@ -24,6 +24,7 @@ const App: React.FC = () => {
     }
 
 
+
     function runExample() {
 
         var cmds = [
@@ -47,24 +48,11 @@ const App: React.FC = () => {
 
     function updateCode(c: string) {
         setCode(c);
-        console.log(code);
     }
 
     useEffect(() => {
         updateCode(code);
     }, [code]);
-
-    function save(filename: string, print: any, x: string) {
-        console.log(x);
-        SpielServerRequest.save(filename, x)
-            .then(res => res.json())
-            .then((result) => {
-                print(filename + " saved successfully!");
-            }).catch((error) => {
-                print("Error: " + error);
-            });
-        return;
-    }
 
 
     return (
@@ -77,7 +65,7 @@ const App: React.FC = () => {
                         <Route exact path="/tutorial" render={(props) => <Tutorial {...props} editorTheme={ editorTheme } />} />
                     </Col>
                     <Col className="move-down" sm={4}>
-                        <Run save={ save } code={ code }  />
+                        <Run code={ code }  />
                     </Col>
                 </Row>
             </Router>
