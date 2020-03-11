@@ -17,7 +17,7 @@ const App: React.FC = () => {
 
     // State
     let [editorTheme, setEditorTheme] = React.useState('default');
-    let [code, setCode] = React.useState("Hello world");
+    let [code, setCode] = React.useState("");
 
     function setTheme(theme: string) {
         setEditorTheme(theme);
