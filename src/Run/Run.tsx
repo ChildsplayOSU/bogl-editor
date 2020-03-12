@@ -70,17 +70,6 @@ class SpielServerRequest {
             }),
         })
     }
-
-
-    static parse_response(res: JSON) {
-        // TODO needs to be implmeneted
-        // Board
-        // Value
-        // Game Result
-        // Parse Error
-        // Type Error
-    }
-
 }
 
 let code = "";
@@ -92,7 +81,42 @@ const Run = (props) => {
 
     code = props.code;
 
-    function save(args, print) {
+    function parse_response(responses: Array<JSON>, print: any) {
+        // Board
+        // Value
+        // Game Result
+        // Parse Error
+        // Type Error
+        let latest: JSON = responses[responses.length-1];
+        switch (latest["tag"]) {
+            case "SpielValue": {
+                print(latest["contents"]);
+                break;
+            }
+            case "SpielBoard": {
+                let boardJSON: JSON = JSON.parse(latest["contents"]);
+                let board: Array<Array<string>> = boardJSON["board"];
+                for (let i: number = 0; i < board.length; i++) {
+                    let out: string = "";
+                    for (let j: number = 0; j < board[i].length; j++) {
+                        if (j) {
+                            out += " ";
+                        }
+                        out  += board[i][j];
+                    }
+                    print(out);
+                }
+                break;
+            }
+            // Error most likely
+            default: {
+                print(latest["tag"] + ": " + latest["contents"]);
+            }
+        }
+        
+    }
+
+    function save(args: any, print: any) {
         if (args._.length != 1) {
             print("Error: Save expects only one argument: the file to be saved.");
         } else {
@@ -108,13 +132,13 @@ const Run = (props) => {
         return;
     }
 
-    function restart(print) {
+    function restart(print: any) {
         gameHistory = [];
         print("Restarted game successfully!");
         return;
     }
 
-    function move(args, print) {
+    function move(args: any, print: any) {
         let command: string = "";
         for (let i: number = 0; i < args._.length; i++) {
             if (i != 0) {
@@ -127,7 +151,7 @@ const Run = (props) => {
         SpielServerRequest.runCmds(filename,gameHistory)
             .then(res => res.json())
             .then((result) => {
-                console.dir(result);
+                parse_response(result.responses, print);
             }).catch((error) => {
                 print("Error with compiler communications: " + error);
             });
@@ -153,6 +177,9 @@ const Run = (props) => {
                     method: (args, print, runCommand) => move(args, print),
                 },
             }}
+            allowTabs={false}
+            hideTopBar={true}
+            startState={"maximised"}
         />
     )
 }
