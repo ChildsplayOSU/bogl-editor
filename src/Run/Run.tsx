@@ -84,11 +84,11 @@ class SpielServerRequest {
 }
 
 let code = "";
+let filename = "";
 
 const Run = (props) => {
 
-    let [gameHistory, setGameHistory] = React.useState([]);
-    let [filename, setFileName] = React.useState("");
+    let [gameHistory, setGameHistory] = React.useState(Array<string>());
 
     code = props.code;
 
@@ -96,8 +96,7 @@ const Run = (props) => {
         if (args._.length != 1) {
             print("Error: Save expects only one argument: the file to be saved.");
         } else {
-            let filename: string = args._[0];
-            //console.log(code);
+            filename = args._[0];
             SpielServerRequest.save(filename, code)
                 .then(res => res.json())
                 .then((result) => {
@@ -109,6 +108,33 @@ const Run = (props) => {
         return;
     }
 
+    function restart(print) {
+        gameHistory = [];
+        print("Restarted game successfully!");
+        return;
+    }
+
+    function move(args, print) {
+        let command: string = "";
+        for (let i: number = 0; i < args._.length; i++) {
+            if (i != 0) {
+                command += " ";
+            }
+            command += args._[i];
+        }
+        gameHistory.push(command);
+        console.log(filename);
+        SpielServerRequest.runCmds(filename,gameHistory)
+            .then(res => res.json())
+            .then((result) => {
+                console.dir(result);
+            }).catch((error) => {
+                print("Error with compiler communications: " + error);
+            });
+        return;
+    }
+        
+
     return (
         <Terminal
             color='white'
@@ -117,15 +143,14 @@ const Run = (props) => {
             style={{ fontSize: "1.1em" }}
             showActions={false}
             commands={{
+                restart: {
+                    method: (args, print, runCommand) => restart(print),
+                },
                 save: {
                     method: (args, print, runCommand) => save(args, print),
-                    options: [
-                        {
-                            name: 'file',
-                            description: 'File to be run',
-                            defaultValue: '',
-                        },
-                    ],
+                },
+                run: {
+                    method: (args, print, runCommand) => move(args, print),
                 },
             }}
         />
