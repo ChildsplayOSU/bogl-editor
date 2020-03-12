@@ -26,6 +26,7 @@
     "terminal-in-react": "^4.3.1",
     "typescript": "^3.7.5"
   },
+  "main": "src/Electron-Main.js",
   "scripts": {
     "setup": "git clone https://github.com/The-Code-In-Sheep-s-Clothing/Spiel-Lang.git && cd Spiel-Lang && stack build && stack install",
     "start": "react-scripts start",
@@ -33,7 +34,8 @@
     "stopProduction": "react-scripts stop",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "electron-start": "electron ."
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -49,5 +51,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "electron": "^8.1.1"
   }
 }
