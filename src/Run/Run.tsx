@@ -56,7 +56,7 @@ class SpielServerRequest {
     // "examples/TicTacToe.bgl"
     // ["2 + 2","3 * 3","20 / 4"]
     // Runs a file with the given commands
-    static runCmds(fileToUse,commands) {
+    static runCmds(fileToUse, command, buf) {
         return fetch(SpielServerRequest.SPIEL_API+'/runCmds', {
             method: 'POST',
             //mode: 'no-cors',
@@ -66,7 +66,8 @@ class SpielServerRequest {
             },
             body: JSON.stringify({
                 file: fileToUse,
-                inputs: commands,
+                input: command,
+                buffer: buf
             }),
         })
     }
@@ -81,16 +82,17 @@ const Run = (props) => {
 
     code = props.code;
 
-    function parse_response(responses: Array<JSON>, print: any) {
+    function parse_response(responses: any, print: any) {
         // Board
         // Value
         // Game Result
         // Parse Error
         // Type Error
+        console.log(responses);
         let latest: JSON = responses[responses.length-1];
         switch (latest["tag"]) {
             case "SpielValue": {
-                print(latest["contents"]);
+                print(latest["contents"]["value"]);
                 break;
             }
             case "SpielBoard": {
@@ -148,10 +150,11 @@ const Run = (props) => {
         }
         gameHistory.push(command);
         console.log(filename);
-        SpielServerRequest.runCmds(filename,gameHistory)
+        SpielServerRequest.runCmds(filename,command, [])
             .then(res => res.json())
-            .then((result) => {
-                parse_response(result.responses, print);
+                          .then((result) => {
+                              console.log("result is", result);
+                parse_response(result, print);
             }).catch((error) => {
                 print("Error with compiler communications: " + error);
             });
