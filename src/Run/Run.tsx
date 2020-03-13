@@ -1,7 +1,6 @@
-import * as React from 'react';
-import Modal from 'react-bootstrap/Modal';
-import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
+import React, { useState, useEffect } from 'react';
+// import Form from 'react-bootstrap/Form';
+import Terminal from 'terminal-in-react';
 
 
 // Class for representing requests
@@ -19,7 +18,6 @@ class SpielServerRequest {
     static save(fileName,content) {
         return fetch(SpielServerRequest.SPIEL_API+'/save', {
             method: 'POST',
-            mode: 'no-cors',     
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
@@ -34,7 +32,6 @@ class SpielServerRequest {
     static read(fileName) {
         return fetch(SpielServerRequest.SPIEL_API+'/read', {
             method: 'POST',
-            mode: 'no-cors',     
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
@@ -62,7 +59,7 @@ class SpielServerRequest {
     static runCmds(fileToUse,commands) {
         return fetch(SpielServerRequest.SPIEL_API+'/runCmds', {
             method: 'POST',
-            mode: 'no-cors',     
+            //mode: 'no-cors',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
@@ -73,45 +70,117 @@ class SpielServerRequest {
             }),
         })
     }
+}
 
+let code = "";
+let filename = "";
 
-    static parse_response(res: JSON) {
-        // TODO needs to be implmeneted
+const Run = (props) => {
+
+    let [gameHistory, setGameHistory] = React.useState(Array<string>());
+
+    code = props.code;
+
+    function parse_response(responses: Array<JSON>, print: any) {
         // Board
         // Value
         // Game Result
         // Parse Error
         // Type Error
+        let latest: JSON = responses[responses.length-1];
+        switch (latest["tag"]) {
+            case "SpielValue": {
+                print(latest["contents"]);
+                break;
+            }
+            case "SpielBoard": {
+                let boardJSON: JSON = JSON.parse(latest["contents"]);
+                let board: Array<Array<string>> = boardJSON["board"];
+                for (let i: number = 0; i < board.length; i++) {
+                    let out: string = "";
+                    for (let j: number = 0; j < board[i].length; j++) {
+                        if (j) {
+                            out += " ";
+                        }
+                        out  += board[i][j];
+                    }
+                    print(out);
+                }
+                break;
+            }
+            // Error most likely
+            default: {
+                print(latest["tag"] + ": " + latest["contents"]);
+            }
+        }
+        
     }
 
-}
-
-const Run = (props) => {
-    let [input,setInput] = React.useState('');
-
-    function run() {
-        props.commands.push(input);
-        props.runCode();
-        setInput("");
+    function save(args: any, print: any) {
+        if (args._.length != 1) {
+            print("Error: Save expects only one argument: the file to be saved.");
+        } else {
+            filename = args._[0];
+            SpielServerRequest.save(filename, code)
+                .then(res => res.json())
+                .then((result) => {
+                    print(filename + " saved successfully!");
+                }).catch((error) => {
+                    print("Error: " + error);
+                });
+        }
+        return;
     }
 
-    function handleChange(e: any) {
-        setInput(e.target.value);
+    function restart(print: any) {
+        gameHistory = [];
+        print("Restarted game successfully!");
+        return;
     }
+
+    function move(args: any, print: any) {
+        let command: string = "";
+        for (let i: number = 0; i < args._.length; i++) {
+            if (i != 0) {
+                command += " ";
+            }
+            command += args._[i];
+        }
+        gameHistory.push(command);
+        console.log(filename);
+        SpielServerRequest.runCmds(filename,gameHistory)
+            .then(res => res.json())
+            .then((result) => {
+                parse_response(result.responses, print);
+            }).catch((error) => {
+                print("Error with compiler communications: " + error);
+            });
+        return;
+    }
+        
 
     return (
-        <Modal {...props} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
-            <Modal.Body>
-                <Form.Group controlId="exampleForm.ControlTextarea1">
-                    <Form.Label>Input</Form.Label>
-                    <Form.Control value={input} as="textarea" onChange={handleChange} rows="1"/>
-                </Form.Group>
-            </Modal.Body>
-            <Modal.Footer>
-                <Button onClick={run}>Run</Button>
-                <Button onClick={props.onHide}>Close</Button>
-            </Modal.Footer>
-        </Modal>
+        <Terminal
+            color='white'
+            backgroundColor='black'
+            barColor='black'
+            style={{ fontSize: "1.1em" }}
+            showActions={false}
+            commands={{
+                restart: {
+                    method: (args, print, runCommand) => restart(print),
+                },
+                save: {
+                    method: (args, print, runCommand) => save(args, print),
+                },
+                run: {
+                    method: (args, print, runCommand) => move(args, print),
+                },
+            }}
+            allowTabs={false}
+            hideTopBar={true}
+            startState={"maximised"}
+        />
     )
 }
 

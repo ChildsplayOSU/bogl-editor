@@ -19,30 +19,22 @@ const SpielNavbar = (props) => {
         return navitems; 
     }
 
-    function getRunButton() {
-        //if (props.run === true) {
-            return <Nav.Link onClick={props.modal}>Run</Nav.Link>;
-        //}
-        //return <></>;
-    }
-
     return (
         <Navbar bg="danger" variant="dark" expand="lg" fixed="top">
             <Navbar.Brand>Spiel Language</Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="mr-auto">
-                    <Nav.Link as={Link} to="/" exact>Home</Nav.Link>
-                    <Nav.Link as={Link} to="/free">Free Editor</Nav.Link>
+                    <Nav.Link as={Link} to="/">Editor</Nav.Link>
                     <Nav.Link as={Link} to="/tutorial">Tutorial</Nav.Link>
                     <NavDropdown title="Themes" id="basic-nav-dropdown">
                         {getThemes()}
                     </NavDropdown>
-                    <Nav.Link onClick={props.modal}>Run</Nav.Link>;
                 </Nav>
             </Navbar.Collapse>
         </Navbar>
     );
+    //<Nav.Link onClick={props.modal}>Run</Nav.Link>;
 }
 
 export default SpielNavbar;

@@ -1,7 +1,6 @@
-import * as React from 'react';
+import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-import { createBrowserHistory } from "history";
 
 import SpielEditor from './Editor/SpielEditor';
 import SpielNavbar from './Navbar/SpielNavbar';
@@ -9,59 +8,25 @@ import Home from './HomePage/Home';
 import Tutorial from './Tutorial/Tutorial';
 import { Run, SpielServerRequest } from './Run/Run';
 
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Container from 'react-bootstrap/Container';
+
 
 const App: React.FC = () => {
 
     // State
     let [editorTheme, setEditorTheme] = React.useState('default');
-    let [runButton, setRunButton] = React.useState(false);
-    let [code, setCode] = React.useState('');
-    let [modalShow, setModalShow] = React.useState(false);
-    let [commands, setCommands] = React.useState(Array<string>());
+    let [code, setCode] = React.useState("");
 
     function setTheme(theme: string) {
         setEditorTheme(theme);
     }
 
-    function setRun() {
-        return createBrowserHistory().location.pathname === "/free" || createBrowserHistory().location.pathname === "/tutorial";
-    }
 
-    // just a placeholder to run a file on the backend
-    // save a file with a given name of TEMP
-    // run that file
+
     function runExample() {
 
-        // /read
-        // read a file, auto-adds .bgl extension
-        // returns JSON with 'content' and 'fileName' set
-        // returns...{"fileName":"examples/TicTacToe","content":"..."}
-        /*
-        SpielServerRequest.read('examples/TicTacToe').then(res => res.json()).then(result => {
-            setCode(JSON.stringify(result));
-            //setCode(result.content);
-        });
-
-        // /save
-        // save a file with data
-        // auto-adds the '.bgl' extension, so leave it off
-        // to prevent accidentally overwriting a .hs file or something other than a .bgl file
-        // returns...{"responses":[{"tag":"SpielOK","contents":"TEST.bgl written successfully"}]}
-        
-        SpielServerRequest.save('TEST',"2 + 2 * 3").then(res => res.json()).then(result => {
-            setCode(JSON.stringify(result));
-        });
-
-        // /test
-        // example of calling test endpoint, just to make sure it's working
-        // returns...{"responses":[{"tag":"SpielOK","contents":"Spiel is Running!"}]}
-        SpielServerRequest.test().then(res => res.json()).then(result => {
-            setCode(JSON.stringify(result));
-        });
-
-        // /runCmds
-        // example of running commands on a file
-        /**/
         var cmds = [
             "2 + 2",
             "3 * 3",
@@ -81,38 +46,29 @@ const App: React.FC = () => {
         });
     }
 
-    function runButtonClicked() {
-        setModalShow(true);         
+    function updateCode(c: string) {
+        setCode(c);
     }
 
-    function runCode(){
-        console.log("Saving file...");
-        console.log(commands);
-        console.log(code);
-        SpielServerRequest.save("TEMP",code)
-            .then(res => res.json())
-            .then((result) => {
-                console.log("Save successful");
-                console.log(result);
-                console.log("Running file...");
-                SpielServerRequest.runCmds("TEMP", commands)
-                    .then(res => res.json())
-                    .then((result) => {
-                        console.log("Run successful");
-                        console.log(result);
-                });
-        });
-    }
+    useEffect(() => {
+        updateCode(code);
+    }, [code]);
+
 
     return (
         <>
             <Router>
-                <SpielNavbar modal={runButtonClicked} setTheme={ setTheme } />
-                <Route exact path="/" component={ Home } />
-                <Route exact path="/free" render={(props) => <SpielEditor {...props} editorTheme={ editorTheme } code={ code } setCode={ setCode }/>} />
-                <Route exact path="/tutorial" render={(props) => <Tutorial {...props} editorTheme={ editorTheme } />} />
+                <SpielNavbar setTheme={ setTheme } />
+                <Row noGutters={true}>
+                    <Col className="move-down tall" sm={8}>
+                        <Route className="CodeMirror" exact path="/" render={(props) => <SpielEditor {...props} code={ code } editorTheme={ editorTheme } updateCode={ updateCode }/>} />
+                        <Route exact path="/tutorial" render={(props) => <Tutorial {...props} editorTheme={ editorTheme } />} />
+                    </Col>
+                    <Col className="move-down" sm={4}>
+                        <Run code={ code }  />
+                    </Col>
+                </Row>
             </Router>
-            <Run commands={commands} runCode={runCode} code={code} show={modalShow} onHide={() => setModalShow(false)}/>
         </>
     );
 }
