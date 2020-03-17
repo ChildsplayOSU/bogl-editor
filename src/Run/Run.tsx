@@ -56,7 +56,7 @@ class SpielServerRequest {
     // "examples/TicTacToe.bgl"
     // ["2 + 2","3 * 3","20 / 4"]
     // Runs a file with the given commands
-    static runCmds(fileToUse,commands) {
+    static runCmds(fileToUse, command, buf) {
         return fetch(SpielServerRequest.SPIEL_API+'/runCmds', {
             method: 'POST',
             //mode: 'no-cors',
@@ -66,7 +66,8 @@ class SpielServerRequest {
             },
             body: JSON.stringify({
                 file: fileToUse,
-                inputs: commands,
+                input: command,
+                buffer: buf
             }),
         })
     }
@@ -77,20 +78,23 @@ let filename = "";
 
 const Run = (props) => {
 
-    let [gameHistory, setGameHistory] = React.useState(Array<string>());
+    let [gameInput, setGameInput] = React.useState(Array<any>());
+    let [game, setGame] = React.useState(""); 
 
     code = props.code;
 
-    function parse_response(responses: Array<JSON>, print: any) {
+    function parse_response(responses: any, print: any) {
         // Board
         // Value
         // Game Result
         // Parse Error
         // Type Error
+        console.log(responses);
         let latest: JSON = responses[responses.length-1];
+        //console.log(latest);
         switch (latest["tag"]) {
             case "SpielValue": {
-                print(latest["contents"]);
+                print(latest["contents"]["value"].toString());
                 break;
             }
             case "SpielBoard": {
@@ -100,9 +104,26 @@ const Run = (props) => {
                     let out: string = "";
                     for (let j: number = 0; j < board[i].length; j++) {
                         if (j) {
-                            out += " ";
+                            out += "\t";
                         }
-                        out  += board[i][j];
+                        out += board[i][j];
+                    }
+                    print(out);
+                }
+                break;
+            }
+            case "SpielPrompt": {
+                let boardJSON: JSON = latest["contents"];
+                //console.log("boardJSON: ", boardJSON);
+                let board: Array<Array<JSON>> = boardJSON[0]["value"];
+                //console.log("board: ", board);
+                for (let i: number = 0; i < board.length; i++) {
+                    let out: string = "";
+                    for (let j: number = 0; j < board[i].length; j++) {
+                        if (j) {
+                            out += "\t";
+                        }
+                        out += board[i][j][1]["value"];
                     }
                     print(out);
                 }
@@ -111,6 +132,7 @@ const Run = (props) => {
             // Error most likely
             default: {
                 print(latest["tag"] + ": " + latest["contents"]);
+                break;
             }
         }
         
@@ -133,12 +155,24 @@ const Run = (props) => {
     }
 
     function restart(print: any) {
-        gameHistory = [];
+        gameInput = [];
         print("Restarted game successfully!");
         return;
     }
 
-    function move(args: any, print: any) {
+    function set_game(args: any, print: any) {
+        game = "";
+        for (let i: number = 0; i < args._.length; i++) {
+            if (i != 0) {
+                game += " ";
+            }
+            game += args._[i];
+        }
+        print("Game successfully set to: " + game);
+        return;
+    }
+
+    function repl_command(args: any, print: any) {
         let command: string = "";
         for (let i: number = 0; i < args._.length; i++) {
             if (i != 0) {
@@ -146,14 +180,34 @@ const Run = (props) => {
             }
             command += args._[i];
         }
-        gameHistory.push(command);
-        console.log(filename);
-        SpielServerRequest.runCmds(filename,gameHistory)
+        SpielServerRequest.runCmds(filename, command, [])
             .then(res => res.json())
             .then((result) => {
-                parse_response(result.responses, print);
+                parse_response(result, print);
             }).catch((error) => {
-                print("Error with compiler communications: " + error);
+                print(error);
+            });
+        return;
+    }
+
+    function input(args: any, print: any) {
+        let move: string = "";
+        for (let i: number = 0; i < args._.length; i++) {
+            if (i != 0) {
+                move += " ";
+            }
+            move += args._[i];
+        }
+        let x = {
+            "input": move,
+        };
+        gameInput.push(x);
+        SpielServerRequest.runCmds(filename, game, gameInput)
+            .then(res => res.json())
+            .then((result) => {
+                parse_response(result, print);
+            }).catch((error) => {
+                print(error);
             });
         return;
     }
@@ -173,15 +227,30 @@ const Run = (props) => {
                 save: {
                     method: (args, print, runCommand) => save(args, print),
                 },
-                run: {
-                    method: (args, print, runCommand) => move(args, print),
+                move: {
+                    method: (args, print, runCommand) => input(args, print),
+                },
+                game: {
+                    method: (args, print, runCommand) => set_game(args, print),
+                },
+                command: {
+                    method: (args, print, runCommand) => repl_command(args, print),
                 },
             }}
             allowTabs={false}
             hideTopBar={true}
             startState={"maximised"}
         />
+
     )
+    // descriptions={{
+    //             "restart": "Syntax: restart - Restarts current game",
+    //             "save": "Syntax: save <filename> - Saves text in editor to <filename>, then sets current game file to that filename",
+    //             "move": "Syntax: move <Input> - Performs <Input> as next move. Argument must match program's Input type",
+    //             "game": "Syntax: game <function> - Sets current game to <function> that must be in current file",
+    //             "command": "Syntax: command <expression> - Performs <expression> with current file's context",
+    //         }}
+
 }
 
 export {Run,SpielServerRequest};

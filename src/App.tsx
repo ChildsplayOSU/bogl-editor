@@ -23,29 +23,6 @@ const App: React.FC = () => {
         setEditorTheme(theme);
     }
 
-
-
-    function runExample() {
-
-        var cmds = [
-            "2 + 2",
-            "3 * 3",
-            "20 / 4",
-            "gameLoop(empty)",
-            "whileTest(1)"
-        ];
-        SpielServerRequest.runCmds('examples/TicTacToe.bgl',cmds).then(res => res.json()).then((result) => {
-            //setModalShow(true);
-            var val = "";
-            for(var x = 0; x < result.responses.length; x++) {
-                val += cmds[x]+"\n";
-                val += JSON.stringify(result.responses[x])+"\n";
-            }
-            setCode(val);
-            //setCode(JSON.stringify(result));
-        });
-    }
-
     function updateCode(c: string) {
         setCode(c);
     }
