@@ -27,7 +27,7 @@
     "typescript": "^3.7.5"
   },
   "scripts": {
-    "setup": "git clone https://github.com/The-Code-In-Sheep-s-Clothing/Spiel-Lang.git && cd Spiel-Lang && stack build && stack install",
+    "setup": "npm install && git clone https://github.com/The-Code-In-Sheep-s-Clothing/Spiel-Lang.git && cd Spiel-Lang && stack build && stack install",
     "start": "react-scripts start",
     "startProduction": "(react-scripts start &>/dev/null &) && spielserver",
     "stopProduction": "react-scripts stop",

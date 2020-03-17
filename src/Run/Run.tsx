@@ -94,7 +94,7 @@ const Run = (props) => {
         //console.log(latest);
         switch (latest["tag"]) {
             case "SpielValue": {
-                print(latest["contents"]["value"]);
+                print(latest["contents"]["value"].toString());
                 break;
             }
             case "SpielBoard": {
@@ -104,9 +104,9 @@ const Run = (props) => {
                     let out: string = "";
                     for (let j: number = 0; j < board[i].length; j++) {
                         if (j) {
-                            out += " ";
+                            out += "\t";
                         }
-                        out  += board[i][j];
+                        out += board[i][j];
                     }
                     print(out);
                 }
@@ -121,7 +121,7 @@ const Run = (props) => {
                     let out: string = "";
                     for (let j: number = 0; j < board[i].length; j++) {
                         if (j) {
-                            out += " ";
+                            out += "\t";
                         }
                         out += board[i][j][1]["value"];
                     }
@@ -241,7 +241,16 @@ const Run = (props) => {
             hideTopBar={true}
             startState={"maximised"}
         />
+
     )
+    // descriptions={{
+    //             "restart": "Syntax: restart - Restarts current game",
+    //             "save": "Syntax: save <filename> - Saves text in editor to <filename>, then sets current game file to that filename",
+    //             "move": "Syntax: move <Input> - Performs <Input> as next move. Argument must match program's Input type",
+    //             "game": "Syntax: game <function> - Sets current game to <function> that must be in current file",
+    //             "command": "Syntax: command <expression> - Performs <expression> with current file's context",
+    //         }}
+
 }
 
 export {Run,SpielServerRequest};
