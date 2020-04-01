@@ -24,3 +24,5 @@ yarn-error.log*
 
 Spiel-Lang/
 *.bgl
+
+*.swp

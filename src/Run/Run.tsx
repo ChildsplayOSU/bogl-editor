@@ -129,9 +129,18 @@ const Run = (props) => {
                 }
                 break;
             }
+            case "SpielTypeError": {
+                let contents = latest["contents"];
+
+                // unused vars but I left them here in case we want to highlight in the editor
+                let line = contents["line"];
+                let column = contents["col"];
+                print(contents["message"]);
+                break;
+            }
             // Error most likely
             default: {
-                print(latest["tag"] + ": " + latest["contents"]);
+                print(latest["tag"] + ": " + JSON.stringify(latest["contents"])); // TODO 
                 break;
             }
         }
