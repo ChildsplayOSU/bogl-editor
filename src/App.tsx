@@ -41,7 +41,7 @@ const App: React.FC = () => {
                         <Route className="CodeMirror" exact path="/" render={(props) => <SpielEditor {...props} code={ code } editorTheme={ editorTheme } updateCode={ updateCode }/>} />
                         <Route exact path="/tutorial" render={(props) => <Tutorial {...props} editorTheme={ editorTheme } />} />
                     </Col>
-                    <Col className="move-down" sm={4}>
+                    <Col className="move-down tall" sm={4}>
                         <Run code={ code }  />
                     </Col>
                 </Row>
