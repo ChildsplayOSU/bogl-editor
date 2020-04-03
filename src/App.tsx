@@ -31,11 +31,20 @@ const App: React.FC = () => {
         updateCode(code);
     }, [code]);
 
+    // Hard-coded filename: TEMP.bgl, saves file
+    function save() {
+        SpielServerRequest.save("TEMP",code)
+        .then(res => res.json()).then((result) => { 
+            console.log("saved"); 
+            console.log(result); 
+        }).catch((error) => alert("Error: " + error));
+        return;
+    }
 
     return (
         <>
             <Router>
-                <SpielNavbar setTheme={ setTheme } />
+                <SpielNavbar run={ save } setTheme={ setTheme } />
                 <Row noGutters={true}>
                     <Col className="move-down tall" sm={8}>
                         <Route className="CodeMirror" exact path="/" render={(props) => <SpielEditor {...props} code={ code } editorTheme={ editorTheme } updateCode={ updateCode }/>} />

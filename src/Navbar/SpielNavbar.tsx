@@ -30,6 +30,7 @@ const SpielNavbar = (props) => {
                     <NavDropdown title="Themes" id="basic-nav-dropdown">
                         {getThemes()}
                     </NavDropdown>
+                    <Nav.Link onClick={() => props.run()}>Save</Nav.Link>
                 </Nav>
             </Navbar.Collapse>
         </Navbar>
