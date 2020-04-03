@@ -182,7 +182,7 @@ const Run = (props) => {
             input(cmd);
             return executeCommand("", print);
         } else {
-            setInputState(true);
+            //setInputState(true);
             command = cmd;
             restart();
             return executeCommand(cmd, print);
