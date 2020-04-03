@@ -138,10 +138,14 @@ const Run = (props) => {
                 print(contents["message"]);
                 break;
             }
+            case "SpielParseError": {
+                print(latest["tag"] + ": " + latest["contents"]); 
+                break; 
+            }
             // Error most likely
             default: {
-                print(latest["tag"] + ": " + JSON.stringify(latest["contents"])); // TODO 
-                break;
+                print(latest["tag"] + ": " + latest["contents"]); 
+                break;  
             }
         }
         
