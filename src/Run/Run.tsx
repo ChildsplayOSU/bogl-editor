@@ -75,11 +75,11 @@ class SpielServerRequest {
 
 let code = "";
 let filename = "TEMP";
+let command = "";
 
 const Run = (props) => {
 
     let [commandInput, setCommandInput] = React.useState(Array<any>());
-    let [command, setCommand] = React.useState(""); 
     let [inputState, setInputState] = React.useState(false);
 
     code = props.code;
@@ -138,15 +138,16 @@ const Run = (props) => {
                 break;
             }
             case "SpielParseError": {
-                print(latest["tag"] + ": " + latest["contents"]); 
+                res = latest["tag"] + ": " + latest["contents"];
                 break; 
             }
             // Error most likely
             default: {
-                print(latest["tag"] + ": " + latest["contents"]); 
+                res = latest["tag"] + ": " + latest["contents"];
                 break;  
             }
         }
+        console.log("FOUND: " + res);
         return res;
     }
 
@@ -161,28 +162,30 @@ const Run = (props) => {
         return;
     }
 
-    function executeCommand(cmd: string) {
-        console.log("EXECUTING: " + cmd);
-        console.log(commandInput);
-        SpielServerRequest.runCmds(filename, cmd == "" ? command : cmd, commandInput)
+    function executeCommand(cmd: string, print: any) {
+        console.log("EXECUTING: " + cmd + "/" + command);
+        //console.log(commandInput);
+        //console.log((cmd === "" ? command : cmd).toString());
+        SpielServerRequest.runCmds(filename, (cmd === "" ? command : cmd).toString(), commandInput)
         .then(res => res.json())
         .then((result) => {
-            return parse_response(result);
+            print(parse_response(result));
         }).catch((error) => {
             console.log("ERROR"); 
-            return "error";
+            print("Error:" + error);
         });
     }
 
-    function runCommand(cmd: string) {
+    function runCommand(cmd: string, print: any) {
         if (inputState) {
+            //console.log("here");
             input(cmd);
-            return executeCommand("");
+            return executeCommand("", print);
         } else {
             setInputState(true);
-            setCommand(cmd);
+            command = cmd;
             restart();
-            return executeCommand(cmd);
+            return executeCommand(cmd, print);
         }
     }
 
@@ -195,8 +198,7 @@ const Run = (props) => {
             showActions={false}
             commandPassThrough={(cmd, print) => {
                 // Expects to return string to be printed
-                let res = runCommand(cmd);
-                return res;
+                runCommand(cmd, print);
             }}
             allowTabs={false}
             hideTopBar={true}
