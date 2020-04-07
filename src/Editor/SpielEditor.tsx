@@ -36,7 +36,7 @@ const SpielEditor = (props) => {
                     theme: props.editorTheme, 
                     readOnly: false
                 }}
-                editorDidMount={editor => { setEditor(editor); }}
+
             />
         </>
     );
