@@ -1,6 +1,7 @@
 {
   "name": "spiel-front",
   "version": "0.1.0",
+  "homepage": "./",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
@@ -23,10 +24,8 @@
     "react-dom": "^16.12.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.3.0",
-    "terminal-in-react": "^4.3.1",
-    "typescript": "^3.7.5"
+    "terminal-in-react": "^4.3.1"
   },
-  "main": "src/Electron-Main.js",
   "scripts": {
     "setup": "npm install && git clone https://github.com/The-Code-In-Sheep-s-Clothing/Spiel-Lang.git && cd Spiel-Lang && stack build && stack install",
     "start": "react-scripts start",
@@ -35,7 +34,10 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "electron-start": "electron ."
+    "electron-start": "electron .",
+"build-electron": "mkdir build/src && mkdir build/resources && cp -r electron/. build/electron && cp -r resources/* build/resources/",
+"package": "electron-builder build --mac --win -c.extraMetadata.main=build/electron/main.js --publish never",
+"package-mac": "electron-builder build --mac -c.extraMetadata.main=build/electron/main.js --publish never"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -53,6 +55,14 @@
     ]
   },
   "devDependencies": {
-    "electron": "^8.1.1"
+    "electron": "^8.1.1",
+    "electron-builder": "^22.4.1",
+    "typescript": "^3.8.3"
+  },
+  "build": {
+	  "appId": "noId",
+	  "files": ["build/**/*", "node_modules/**/*", "resources/spielserver"],
+	  "directories": {},
+	  "extraResources": ["resources"]
   }
 }

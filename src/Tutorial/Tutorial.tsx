@@ -40,7 +40,6 @@ const Tutorial = ({ editorTheme }) => {
                     theme: editorTheme, 
                     readOnly: false
                 }}
-                editorDidMount={editor => { setReadOnly(editor); setEditor(editor); }}
             />
         </>
     );
