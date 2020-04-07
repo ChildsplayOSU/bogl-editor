@@ -51,8 +51,8 @@ const App: React.FC = () => {
                 <SpielNavbar filename={filename} setFilename={setFilename} save={save} setTheme={setTheme} />
                 <Row noGutters={true}>
                     <Col className="move-down tall" sm={8}>
-                        <Route className="CodeMirror" exact path="/" render={(props) => <SpielEditor {...props} code={code} editorTheme={editorTheme} updateCode={updateCode}/>} />
-                        <Route exact path="/tutorial" render={(props) => <Tutorial {...props} editorTheme={ editorTheme } />} />
+                        <Route className="CodeMirror" exact path="/" render={(props) => <SpielEditor {...props} code={code} editorTheme={editorTheme} updateCode={updateCode}/> } />
+                        <Route exact path="/tutorial" render={(props) => <Tutorial {...props} editorTheme={editorTheme} />} />
                     </Col>
                     <Col className="move-down tall" sm={4}>
                         <Run code={code} filename={filename} />

@@ -73,6 +73,7 @@ class SpielServerRequest {
     }
 }
 
+// Global strings to keep React state consistent (probably not best practice)
 let code = "";
 let command = "";
 
@@ -83,20 +84,18 @@ const Run = (props) => {
 
     code = props.code;
 
+    // Used to parse response from back-end server
     function parse_response(responses: any) {
-        // Board
-        // Value
-        // Game Result
-        // Parse Error
-        // Type Error
         console.log(responses);
         let latest: JSON = responses[responses.length-1];
         let res: string = "";
         switch (latest["tag"]) {
+            // Basic value, just print
             case "SpielValue": {
                 res = latest["contents"]["value"].toString();
                 break;
             }
+            // Board value: Need to loop through board and build string
             case "SpielBoard": {
                 let boardJSON: JSON = JSON.parse(latest["contents"]);
                 let board: Array<Array<string>> = boardJSON["board"];
@@ -111,6 +110,8 @@ const Run = (props) => {
                 }
                 break;
             }
+            // Need to build board (same as spielboard), also switch to input
+            // mode since expects input
             case "SpielPrompt": {
                 let boardJSON: JSON = latest["contents"];
                 //console.log("boardJSON: ", boardJSON);
@@ -125,8 +126,13 @@ const Run = (props) => {
                     }
                     res += "\n";
                 }
+                if (!inputState) {
+                    res += "Switching to input mode. Press Ctrl+C to exit\n";
+                    inputState = true;
+                }
                 break;
             }
+            // Errors
             case "SpielTypeError": {
                 let contents = latest["contents"];
 
@@ -150,21 +156,25 @@ const Run = (props) => {
         return res;
     }
 
+    // Clears command's input
     function restart() {
         commandInput = [];
         return;
     }
 
 
+    // Pushes item to command's input
     function input(next: string) {
-        commandInput.push(next);
+        commandInput.push({"input":next});
         return;
     }
 
+    // Sends execute command with input to back-end, then prints out using "print"
+    // function to REPL terminal
     function executeCommand(cmd: string, print: any) {
         console.log("EXECUTING: " + cmd + "/" + command);
-        //console.log(commandInput);
-        //console.log((cmd === "" ? command : cmd).toString());
+        console.log((cmd === "" ? command : cmd).toString());
+        console.log(commandInput);
         SpielServerRequest.runCmds(props.filename, (cmd === "" ? command : cmd), commandInput)
         .then(res => res.json())
         .then((result) => {
@@ -178,6 +188,7 @@ const Run = (props) => {
     // Run REPL command. If expecting input, put input in
     function runCommand(cmd: string, print: any) {
         if (inputState) {
+            input(cmd);
             return executeCommand("", print);
         } else {
             command = cmd;
@@ -194,7 +205,7 @@ const Run = (props) => {
             style={{ fontSize: "1.1em" }}
             showActions={false}
             commandPassThrough={(cmd, print) => {
-                // Build command (cmd == array of commands with spaces separated)
+                // Build command (cmd == array of arguments user entered with spaces separated)
                 let c = "";
                 for (var x = 0; x < cmd.length; x++) {
                     if (x) {

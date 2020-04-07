@@ -11,8 +11,10 @@ import './SpielNavbar.css';
 
 const SpielNavbar = (props) => {
 
+    // Themes available
     const themes: Array<string> = ["default", "midnight", "gruvbox-dark", "solarized", "nord"]; 
 
+    // Generate theme list to be used in drop down
     function getThemes() {
         let navitems: Array<JSX.Element> = [];
         for (let i = 0; i < themes.length; i++) {
@@ -22,11 +24,14 @@ const SpielNavbar = (props) => {
         return navitems; 
     }
 
+    // When users press enter to submit save request, automatically reloads page
     function handleSubmit(e: any) {
+        // This disables reload
         e.preventDefault();
         props.save();
     }
 
+    // Uses React-Router to change page
     return (
         <Navbar bg="danger" variant="dark" expand="lg" fixed="top">
             <Navbar.Brand>Spiel Language</Navbar.Brand>
