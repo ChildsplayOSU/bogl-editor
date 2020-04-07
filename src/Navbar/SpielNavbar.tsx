@@ -44,8 +44,9 @@ const SpielNavbar = (props) => {
                         {getThemes()}
                     </NavDropdown>
                     <Form inline onSubmit={(e) => handleSubmit(e)}>
-                        <FormControl onChange={(value) => props.setFilename(value.target.value)} type="text" placeholder="Filename"/>
-                        <Button variant="dark" onClick={() => props.save()}>Save</Button>
+                        <FormControl className="mr-sm-2" onChange={(value) => props.setFilename(value.target.value)} type="text" placeholder="Filename"/>
+                        <Button className="mr-sm-2" variant="dark" onClick={() => props.save()}>Save</Button>
+                        <Button variant="dark" onClick={() => props.load()}>Load</Button>
                     </Form>
                 </Nav>
             </Navbar.Collapse>

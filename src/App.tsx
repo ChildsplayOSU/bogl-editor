@@ -4,7 +4,6 @@ import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
 import SpielEditor from './Editor/SpielEditor';
 import SpielNavbar from './Navbar/SpielNavbar';
-import Home from './HomePage/Home';
 import Tutorial from './Tutorial/Tutorial';
 import { Run, SpielServerRequest } from './Run/Run';
 
@@ -50,11 +49,21 @@ const App: React.FC = () => {
         return;
     }
 
+    // Load function: loads file from back end
+    function load() {
+        SpielServerRequest.read(filename)
+        .then(res => res.json()).then((result) => {
+            console.log("loaded: " + filename);
+            console.log(result);
+        }).catch((error) => alert("Error connecting with server: " + error));
+        return;
+    }
+
     // Parent to Editor, Tutorial, and Run (terminal)
     return (
         <>
             <Router>
-                <SpielNavbar filename={filename} setFilename={setFilename} save={save} setTheme={setTheme} />
+                <SpielNavbar load={load} filename={filename} setFilename={setFilename} save={save} setTheme={setTheme} />
                 <Row noGutters={true}>
                     <Col className="move-down tall" sm={8}>
                         <Route className="CodeMirror" exact path="/" render={(props) => <SpielEditor {...props} code={code} editorTheme={editorTheme} updateCode={updateCode}/> } />
