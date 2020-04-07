@@ -15,13 +15,18 @@ import Container from 'react-bootstrap/Container';
 
 const App: React.FC = () => {
 
+    // Keys for local storage
+    let THEME_KEY = "THEME_KEY";
+    let CODE_KEY = "CODE_KEY";
+
     // State functions 
-    let [editorTheme, setEditorTheme] = React.useState('default');
-    let [code, setCode] = React.useState("");
+    let [editorTheme, setEditorTheme] = React.useState(localStorage.getItem(THEME_KEY) || "default");
+    let [code, setCode] = React.useState(localStorage.getItem(CODE_KEY) || "");
     let [filename, setFilename] = React.useState("");
 
     function setTheme(theme: string) {
         setEditorTheme(theme);
+        localStorage.setItem(THEME_KEY, theme);
     }
 
     function updateCode(c: string) {
@@ -32,6 +37,7 @@ const App: React.FC = () => {
     useEffect(() => {
         updateCode(code);
         setFilename(filename);
+        localStorage.setItem(CODE_KEY, code);
     }, [code, filename]);
 
     // Save function: saves file, sets filename to be run, and  

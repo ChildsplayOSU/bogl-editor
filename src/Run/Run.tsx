@@ -127,7 +127,7 @@ const Run = (props) => {
                     res += "\n";
                 }
                 if (!inputState) {
-                    res += "Switching to input mode. Press Ctrl+C to exit\n";
+                    res += "Switching to input mode. Submit \"clear\" command to return to command mode.\n";
                     inputState = true;
                 }
                 break;
@@ -155,13 +155,6 @@ const Run = (props) => {
         console.log("FOUND: " + res);
         return res;
     }
-
-    // Clears command's input
-    function restart() {
-        commandInput = [];
-        return;
-    }
-
 
     // Pushes item to command's input
     function input(next: string) {
@@ -192,9 +185,16 @@ const Run = (props) => {
             return executeCommand("", print);
         } else {
             command = cmd;
-            restart();
             return executeCommand(cmd, print);
         }
+    }
+
+    // Clear input and state
+    function clear() {
+        setCommandInput([]);
+        setInputState(false);
+        command = "";
+        //console.log(command);
     }
 
     return (
@@ -204,6 +204,9 @@ const Run = (props) => {
             barColor='black'
             style={{ fontSize: "1.1em" }}
             showActions={false}
+            commands={{
+                "clear": () => clear(),
+            }}
             commandPassThrough={(cmd, print) => {
                 // Build command (cmd == array of arguments user entered with spaces separated)
                 let c = "";
@@ -212,6 +215,9 @@ const Run = (props) => {
                         c += " ";
                     }
                     c += cmd[x];
+                }
+                if (c === "clear") {
+                    return "Cleared\n";
                 }
                 runCommand(c, print);
             }}
