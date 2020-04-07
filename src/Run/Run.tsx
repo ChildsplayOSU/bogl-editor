@@ -74,7 +74,6 @@ class SpielServerRequest {
 }
 
 let code = "";
-let filename = "TEMP";
 let command = "";
 
 const Run = (props) => {
@@ -166,7 +165,7 @@ const Run = (props) => {
         console.log("EXECUTING: " + cmd + "/" + command);
         //console.log(commandInput);
         //console.log((cmd === "" ? command : cmd).toString());
-        SpielServerRequest.runCmds(filename, (cmd === "" ? command : cmd).toString(), commandInput)
+        SpielServerRequest.runCmds(props.filename, (cmd === "" ? command : cmd), commandInput)
         .then(res => res.json())
         .then((result) => {
             print(parse_response(result));
@@ -176,13 +175,11 @@ const Run = (props) => {
         });
     }
 
+    // Run REPL command. If expecting input, put input in
     function runCommand(cmd: string, print: any) {
         if (inputState) {
-            //console.log("here");
-            input(cmd);
             return executeCommand("", print);
         } else {
-            //setInputState(true);
             command = cmd;
             restart();
             return executeCommand(cmd, print);
@@ -197,8 +194,15 @@ const Run = (props) => {
             style={{ fontSize: "1.1em" }}
             showActions={false}
             commandPassThrough={(cmd, print) => {
-                // Expects to return string to be printed
-                runCommand(cmd, print);
+                // Build command (cmd == array of commands with spaces separated)
+                let c = "";
+                for (var x = 0; x < cmd.length; x++) {
+                    if (x) {
+                        c += " ";
+                    }
+                    c += cmd[x];
+                }
+                runCommand(c, print);
             }}
             allowTabs={false}
             hideTopBar={true}

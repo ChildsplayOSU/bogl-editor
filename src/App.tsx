@@ -15,9 +15,10 @@ import Container from 'react-bootstrap/Container';
 
 const App: React.FC = () => {
 
-    // State
+    // State functions 
     let [editorTheme, setEditorTheme] = React.useState('default');
     let [code, setCode] = React.useState("");
+    let [filename, setFilename] = React.useState("");
 
     function setTheme(theme: string) {
         setEditorTheme(theme);
@@ -27,31 +28,34 @@ const App: React.FC = () => {
         setCode(c);
     }
 
+    // Updates on change of code or filename
     useEffect(() => {
         updateCode(code);
-    }, [code]);
+        setFilename(filename);
+    }, [code, filename]);
 
-    // Hard-coded filename: TEMP.bgl, saves file
+    // Save function: saves file, sets filename to be run, and  
     function save() {
-        SpielServerRequest.save("TEMP",code)
+        SpielServerRequest.save(filename, code)
         .then(res => res.json()).then((result) => { 
-            console.log("saved"); 
+            console.log("saved: " + filename); 
             console.log(result); 
-        }).catch((error) => alert("Error: " + error));
+        }).catch((error) => alert("Error connecting with server: " + error));
         return;
     }
 
+    // Parent to Editor, Tutorial, and Run (terminal)
     return (
         <>
             <Router>
-                <SpielNavbar run={ save } setTheme={ setTheme } />
+                <SpielNavbar filename={filename} setFilename={setFilename} save={save} setTheme={setTheme} />
                 <Row noGutters={true}>
                     <Col className="move-down tall" sm={8}>
-                        <Route className="CodeMirror" exact path="/" render={(props) => <SpielEditor {...props} code={ code } editorTheme={ editorTheme } updateCode={ updateCode }/>} />
+                        <Route className="CodeMirror" exact path="/" render={(props) => <SpielEditor {...props} code={code} editorTheme={editorTheme} updateCode={updateCode}/>} />
                         <Route exact path="/tutorial" render={(props) => <Tutorial {...props} editorTheme={ editorTheme } />} />
                     </Col>
                     <Col className="move-down tall" sm={4}>
-                        <Run code={ code }  />
+                        <Run code={code} filename={filename} />
                     </Col>
                 </Row>
             </Router>

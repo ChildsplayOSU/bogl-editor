@@ -3,6 +3,9 @@ import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import { BrowserRouter as NavLink, Link } from "react-router-dom";
+import Form from 'react-bootstrap/Form';
+import FormControl from 'react-bootstrap/FormControl';
+import Button from 'react-bootstrap/Button';
 
 import './SpielNavbar.css';
 
@@ -19,6 +22,11 @@ const SpielNavbar = (props) => {
         return navitems; 
     }
 
+    function handleSubmit(e: any) {
+        e.preventDefault();
+        props.save();
+    }
+
     return (
         <Navbar bg="danger" variant="dark" expand="lg" fixed="top">
             <Navbar.Brand>Spiel Language</Navbar.Brand>
@@ -30,12 +38,14 @@ const SpielNavbar = (props) => {
                     <NavDropdown title="Themes" id="basic-nav-dropdown">
                         {getThemes()}
                     </NavDropdown>
-                    <Nav.Link onClick={() => props.run()}>Save</Nav.Link>
+                    <Form inline onSubmit={(e) => handleSubmit(e)}>
+                        <FormControl onChange={(value) => props.setFilename(value.target.value)} type="text" placeholder="Filename"/>
+                        <Button variant="dark" onClick={() => props.save()}>Save</Button>
+                    </Form>
                 </Nav>
             </Navbar.Collapse>
         </Navbar>
     );
-    //<Nav.Link onClick={props.modal}>Run</Nav.Link>;
 }
 
 export default SpielNavbar;
