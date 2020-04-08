@@ -17,11 +17,12 @@ const App: React.FC = () => {
     // Keys for local storage
     let THEME_KEY = "THEME_KEY";
     let CODE_KEY = "CODE_KEY";
+    let FILE_KEY = "FILE_KEY";
 
     // State functions 
     let [editorTheme, setEditorTheme] = React.useState(localStorage.getItem(THEME_KEY) || "default");
     let [code, setCode] = React.useState(localStorage.getItem(CODE_KEY) || "");
-    let [filename, setFilename] = React.useState("");
+    let [filename, setFilename] = React.useState(localStorage.getItem(FILE_KEY) || "");
 
     function setTheme(theme: string) {
         setEditorTheme(theme);
@@ -41,6 +42,7 @@ const App: React.FC = () => {
 
     // Save function: saves file, sets filename to be run, and  
     function save() {
+        localStorage.setItem(FILE_KEY, filename);
         SpielServerRequest.save(filename, code)
         .then(res => res.json()).then((result) => { 
             console.log("saved: " + filename); 
@@ -54,8 +56,9 @@ const App: React.FC = () => {
         SpielServerRequest.read(filename)
         .then(res => res.json()).then((result) => {
             console.log("loaded: " + filename);
-            console.log(result);
-        }).catch((error) => alert("Error connecting with server: " + error));
+            setCode(result["content"]);
+            setFilename(result["fileName"]);
+        }).catch((error) => alert("Error: Please make sure that the filename is correct (" + error + ")"));
         return;
     }
 

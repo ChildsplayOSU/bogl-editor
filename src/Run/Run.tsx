@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 // import Form from 'react-bootstrap/Form';
 import Terminal from 'terminal-in-react';
 
-
 // Class for representing requests
 // that can be made to the Spiel Language Server
 class SpielServerRequest {
@@ -37,7 +36,7 @@ class SpielServerRequest {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                path: fileName
+                fileName: fileName
             }),
         });
     }
@@ -76,12 +75,13 @@ class SpielServerRequest {
 // Global strings to keep React state consistent (probably not best practice)
 let code = "";
 let command = "";
+let promptSymbol = ">";
 
 const Run = (props) => {
 
-    let [commandInput, setCommandInput] = React.useState(Array<any>());
-    let [inputState, setInputState] = React.useState(false);
-
+    let [commandInput, setCommandInput] = useState(Array<any>());
+    let [inputState, setInputState] = useState(false);
+    
     code = props.code;
 
     // Used to parse response from back-end server
@@ -93,6 +93,7 @@ const Run = (props) => {
             // Basic value, just print
             case "SpielValue": {
                 res = latest["contents"]["value"].toString();
+                clear();
                 break;
             }
             // Board value: Need to loop through board and build string
@@ -108,6 +109,7 @@ const Run = (props) => {
                     }
                     res += "\n";
                 }
+                clear();
                 break;
             }
             // Need to build board (same as spielboard), also switch to input
@@ -128,6 +130,7 @@ const Run = (props) => {
                 }
                 if (!inputState) {
                     res += "Switching to input mode. Submit \"clear\" command to return to command mode.\n";
+                    promptSymbol = ">>>";
                     inputState = true;
                 }
                 break;
@@ -140,15 +143,19 @@ const Run = (props) => {
                 let line = contents["line"];
                 let column = contents["col"];
                 // print(contents["message"]);
+                clear();
                 break;
             }
+            // 
             case "SpielParseError": {
                 res = latest["tag"] + ": " + latest["contents"];
+                clear();
                 break; 
             }
             // Error most likely
             default: {
                 res = latest["tag"] + ": " + latest["contents"];
+                clear();
                 break;  
             }
         }
@@ -195,6 +202,12 @@ const Run = (props) => {
         setInputState(false);
         command = "";
         //console.log(command);
+        return "Exiting input mode.";
+    }
+
+    function getPromptSymbol() {
+        console.log(promptSymbol);
+        return promptSymbol.toString();
     }
 
     return (
@@ -217,13 +230,14 @@ const Run = (props) => {
                     c += cmd[x];
                 }
                 if (c === "clear") {
-                    return "Cleared\n";
+                    return;
                 }
                 runCommand(c, print);
             }}
             allowTabs={false}
             hideTopBar={true}
             startState={"maximised"}
+            promptSymbol={getPromptSymbol()}
         />
 
     )
