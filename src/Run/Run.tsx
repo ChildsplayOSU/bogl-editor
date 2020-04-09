@@ -122,6 +122,7 @@ const Run = (props) => {
         let res: string = "";
         let switch_mode: string = "";
 
+        console.log(responses);
         console.log(latest);
 
         // Check if inputState switched
@@ -132,6 +133,18 @@ const Run = (props) => {
                     inputState = true;
                 }
                 break;
+            }
+            case "SpielTypeError": {
+                res = latest["contents"]["message"]; 
+                return res;
+            }
+            case "SpielParseError": {
+                res = latest["contents"]["message"]; 
+                return res;
+            }
+            case "SpielTypeHole": {
+                res = latest["contents"]["message"]; 
+                return res;
             }
             default: {
                 if (inputState === true) {
@@ -171,7 +184,6 @@ const Run = (props) => {
     // function to REPL terminal
     function executeCommand(cmd: string, print: any) {
         console.log("EXECUTING: " + cmd + "/" + command);
-        console.log((cmd === "" ? command : cmd).toString());
         console.log(commandInput);
         SpielServerRequest.runCmds(props.filename, (cmd === "" ? command : cmd), commandInput)
         .then(res => res.json())
