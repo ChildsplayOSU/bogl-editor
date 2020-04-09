@@ -84,83 +84,81 @@ const Run = (props) => {
     
     code = props.code;
 
+    // Build board from JSON
+    function get_board(board: Array<Array<JSON>>) {
+        let res: string = "";
+        for (let i: number = 0; i < board.length; i++) {
+            for (let j: number = 0; j < board[i].length; j++) {
+                if (j) {
+                    res += "\t";
+                }
+                res += board[i][j][1]["value"];
+            }
+            res += "\n";
+        }
+        return res;
+    }
+
+    // We support nested tuples, so recursion is our friend
+    function get_tuple(tuple: any) {
+        let res: string = "(";
+        for (let i: number = 0; i < tuple.length; i++) {
+            if (i > 0) {
+                res += ",";
+            }
+            if (tuple[i]["type"] === "Tuple") {
+                res += "(" + get_tuple(tuple[i]["value"]) + ")";
+            } else {
+                res += tuple[i]["value"].toString();
+            }
+        }
+        res += ")";
+        return res;
+    }
+
     // Used to parse response from back-end server
     function parse_response(responses: any) {
-        console.log(responses);
         let latest: JSON = responses[responses.length-1];
         let res: string = "";
+        let switch_mode: string = "";
+
+        console.log(latest);
+
+        // Check if inputState switched
         switch (latest["tag"]) {
-            // Basic value, just print
-            case "SpielValue": {
-                res = latest["contents"]["value"].toString();
-                clear();
-                break;
-            }
-            // Board value: Need to loop through board and build string
-            case "SpielBoard": {
-                let boardJSON: JSON = JSON.parse(latest["contents"]);
-                let board: Array<Array<string>> = boardJSON["board"];
-                for (let i: number = 0; i < board.length; i++) {
-                    for (let j: number = 0; j < board[i].length; j++) {
-                        if (j) {
-                            res += "\t";
-                        }
-                        res += board[i][j];
-                    }
-                    res += "\n";
-                }
-                clear();
-                break;
-            }
-            // Need to build board (same as spielboard), also switch to input
-            // mode since expects input
             case "SpielPrompt": {
-                let boardJSON: JSON = latest["contents"];
-                //console.log("boardJSON: ", boardJSON);
-                let board: Array<Array<JSON>> = boardJSON[0]["value"];
-                //console.log("board: ", board);
-                for (let i: number = 0; i < board.length; i++) {
-                    for (let j: number = 0; j < board[i].length; j++) {
-                        if (j) {
-                            res += "\t";
-                        }
-                        res += board[i][j][1]["value"];
-                    }
-                    res += "\n";
-                }
-                if (!inputState) {
-                    res += "Switching to input mode. Submit \"clear\" command to return to command mode.\n";
-                    promptSymbol = ">>>";
+                if (inputState === false) {
+                    switch_mode = "\nSwitched to input mode. Type \"clear\" to go back to normal mode.\n";
                     inputState = true;
                 }
                 break;
             }
-            // Errors
-            case "SpielTypeError": {
-                let contents = latest["contents"];
-
-                // unused vars but I left them here in case we want to highlight in the editor
-                let line = contents["line"];
-                let column = contents["col"];
-                // print(contents["message"]);
-                clear();
+            default: {
+                if (inputState === true) {
+                    switch_mode = "\nSwitched back to normal mode.\n";
+                    inputState = false;
+                }
                 break;
             }
-            // 
-            case "SpielParseError": {
-                res = latest["tag"] + ": " + latest["contents"];
-                clear();
-                break; 
+        }
+        
+        // Parse response type
+        switch (latest["contents"]["type"]) {
+            case "Board": {
+                res = get_board(latest["contents"]["value"]);
+                break;
+            } 
+            case "Tuple": {
+                res = get_tuple(latest["contents"]["value"]);
+                break;
             }
-            // Error most likely
             default: {
-                res = latest["tag"] + ": " + latest["contents"];
-                clear();
-                break;  
+                res = latest["contents"]["value"];
+                break;
             }
         }
-        console.log("FOUND: " + res);
-        return res;
+
+        return res + switch_mode;
     }
 
     // Pushes item to command's input
@@ -206,7 +204,6 @@ const Run = (props) => {
     }
 
     function getPromptSymbol() {
-        console.log(promptSymbol);
         return promptSymbol.toString();
     }
 
