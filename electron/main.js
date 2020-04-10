@@ -1,21 +1,21 @@
 const path = require('path')
 
-
-
-const {app, BrowserWindow} = require('electron')
+const {app, BrowserWindow, dialog} = require('electron')
 const child_process = require('child_process')
 
 let SpielServer // Don't garbage collect the child process!
 let win
 
 function createWindow () {
-	win = new BrowserWindow({width: 800, height: 600});
+	win = new BrowserWindow({width: 800,
+                           height: 600,
+                           webPreferences: { nodeIntegration: true }});
 	//win.loadURL('http://localhost:3000/');
 	win.loadURL(`file://${path.join(__dirname, '../index.html')}`)
 }
 function languageServer () {
-	console.log(`Looking for spielserver at: ${process.resourcesPath}`);
-	thePath = process.resourcesPath + "/resources/spielserver";
+	console.log(`Looking for spielserver at: ${process.resourcesPath}/resources/spielserver`);
+	let thePath = process.resourcesPath + "/resources/spielserver";
 	SpielServer = child_process.spawn(thePath);
 	SpielServer.on('stdout', (data) => {
 		console.log(`spielserver: ${data}`);

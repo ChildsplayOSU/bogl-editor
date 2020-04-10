@@ -9,6 +9,8 @@ import Button from 'react-bootstrap/Button';
 
 import './SpielNavbar.css';
 
+const {dialog} = window.require("electron").remote;
+
 const SpielNavbar = (props) => {
 
     // Themes available
@@ -43,15 +45,85 @@ const SpielNavbar = (props) => {
                     <NavDropdown title="Themes" id="basic-nav-dropdown">
                         {getThemes()}
                     </NavDropdown>
-                    <Form inline onSubmit={(e) => handleSubmit(e)}>
-                        <FormControl className="mr-sm-2" onChange={(value) => props.setFilename(value.target.value)} type="text" placeholder="Filename"/>
-                        <Button className="mr-sm-2" variant="dark" onClick={() => props.save()}>Save</Button>
-                        <Button variant="dark" onClick={() => props.load()}>Load</Button>
-                    </Form>
                 </Nav>
             </Navbar.Collapse>
         </Navbar>
     );
 }
 
-export default SpielNavbar;
+const SpielNavbarNative = (props) =>
+    [{
+        label: "Spiel",
+        submenu: [
+            { role: 'about' },
+            { type: 'separator' },
+            { role: 'services' },
+            { type: 'separator' },
+            { role: 'hide' },
+            { role: 'hideothers' },
+            { role: 'unhide' },
+            { type: 'separator' },
+            { role: 'quit' }
+        ]
+    },
+    // { role: 'fileMenu' }
+    {
+        label: 'File',
+        submenu: [{
+              label: 'Save',
+            click: () => {
+                let fn = dialog.showSaveDialogSync();
+                console.log(fn);
+                props.setFilename(fn);
+                props.save(fn);
+              }},
+            {
+                label: 'Open',
+                click: () => {
+                    let fn = dialog.showOpenDialogSync()[0]; // oh no...
+                    props.setFilename(fn);
+                    props.load(fn);
+                }
+            },
+            { role: 'close' }
+        ]
+    },
+    // { role: 'editMenu' }
+    {
+        label: 'Edit',
+        submenu: [
+            { role: 'undo' },
+            { role: 'redo' },
+            { type: 'separator' },
+            { role: 'cut' },
+            { role: 'copy' },
+            { role: 'paste' },
+        ]
+    },
+    // { role: 'viewMenu' }
+    {
+        label: 'View',
+        submenu: [
+            { role: 'reload' },
+            { role: 'forcereload' },
+            { role: 'toggledevtools' },
+            { type: 'separator' },
+            { role: 'resetzoom' },
+            { role: 'zoomin' },
+            { role: 'zoomout' },
+            { type: 'separator' },
+            { role: 'togglefullscreen' }
+        ]
+    },
+    // { role: 'windowMenu' }
+    {
+        label: 'Window',
+        submenu: [
+            { role: 'minimize' },
+            { role: 'zoom' },
+        ]
+    },
+];
+
+
+export {SpielNavbarNative, SpielNavbar};
