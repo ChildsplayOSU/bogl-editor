@@ -17,6 +17,11 @@ function languageServer () {
 	console.log(`Looking for spielserver at: ${process.resourcesPath}`);
 	thePath = process.resourcesPath + "/resources/spielserver";
 	SpielServer = child_process.spawn(thePath);
+	SpielServer.on('stdout', (data) => {
+		console.log(`spielserver: ${data}`);
+	});
+	SpielServer.on('stderr', (data) => {
+		console.log(`spielserver (err): ${data}`)});
 }
   app.on('ready', createWindow);
   app.on('ready', languageServer);
