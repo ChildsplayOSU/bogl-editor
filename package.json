@@ -37,7 +37,8 @@
     "electron-start": "electron .",
     "build-electron": "mkdir build/src && mkdir build/resources && cp -r electron/. build/electron && cp -r resources/* build/resources/",
     "package": "electron-builder build --mac --win -c.extraMetadata.main=build/electron/main.js --publish never",
-    "package-mac": "electron-builder build --mac -c.extraMetadata.main=build/electron/main.js --publish never"
+    "package-mac": "electron-builder build --mac -c.extraMetadata.main=build/electron/main.js --publish never",
+    "package-linux": "electron-builder build --linux -c.extraMetadata.main=build/electron/main.js --publish never"
   },
   "eslintConfig": {
     "extends": "react-app"
