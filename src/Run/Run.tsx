@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 // import Form from 'react-bootstrap/Form';
 import Terminal from 'terminal-in-react';
 
-
 // Class for representing requests
 // that can be made to the Spiel Language Server
 class SpielServerRequest {
@@ -37,7 +36,7 @@ class SpielServerRequest {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                path: fileName
+                fileName: fileName
             }),
         });
     }
@@ -73,158 +72,152 @@ class SpielServerRequest {
     }
 }
 
+// Global strings to keep React state consistent (probably not best practice)
 let code = "";
-let filename = "";
+let command = "";
+let promptSymbol = ">";
 
 const Run = (props) => {
 
-    let [gameInput, setGameInput] = React.useState(Array<any>());
-    let [game, setGame] = React.useState(""); 
-
+    let [commandInput, setCommandInput] = useState(Array<any>());
+    let [inputState, setInputState] = useState(false);
+    
     code = props.code;
 
-    function parse_response(responses: any, print: any) {
-        // Board
-        // Value
-        // Game Result
-        // Parse Error
-        // Type Error
-        console.log(responses);
-        let latest: JSON = responses[responses.length-1];
-        //console.log(latest);
-        switch (latest["tag"]) {
-            case "SpielValue": {
-                print(latest["contents"]["value"].toString());
-                break;
-            }
-            case "SpielBoard": {
-                let boardJSON: JSON = JSON.parse(latest["contents"]);
-                let board: Array<Array<string>> = boardJSON["board"];
-                for (let i: number = 0; i < board.length; i++) {
-                    let out: string = "";
-                    for (let j: number = 0; j < board[i].length; j++) {
-                        if (j) {
-                            out += "\t";
-                        }
-                        out += board[i][j];
-                    }
-                    print(out);
+    // Build board from JSON
+    function get_board(board: Array<Array<JSON>>) {
+        let res: string = "";
+        for (let i: number = 0; i < board.length; i++) {
+            for (let j: number = 0; j < board[i].length; j++) {
+                if (j) {
+                    res += "\t";
                 }
-                break;
+                res += board[i][j][1]["value"];
             }
+            res += "\n";
+        }
+        return res;
+    }
+
+    // We support nested tuples, so recursion is our friend
+    function get_tuple(tuple: any) {
+        let res: string = "(";
+        for (let i: number = 0; i < tuple.length; i++) {
+            if (i > 0) {
+                res += ",";
+            }
+            if (tuple[i]["type"] === "Tuple") {
+                res += "(" + get_tuple(tuple[i]["value"]) + ")";
+            } else {
+                res += tuple[i]["value"].toString();
+            }
+        }
+        res += ")";
+        return res;
+    }
+
+    // Used to parse response from back-end server
+    function parse_response(responses: any) {
+        let latest: JSON = responses[responses.length-1];
+        let res: string = "";
+        let switch_mode: string = "";
+
+        console.log(responses);
+        console.log(latest);
+
+        // Check if inputState switched
+        switch (latest["tag"]) {
             case "SpielPrompt": {
-                let boardJSON: JSON = latest["contents"];
-                //console.log("boardJSON: ", boardJSON);
-                let board: Array<Array<JSON>> = boardJSON[0]["value"];
-                //console.log("board: ", board);
-                for (let i: number = 0; i < board.length; i++) {
-                    let out: string = "";
-                    for (let j: number = 0; j < board[i].length; j++) {
-                        if (j) {
-                            out += "\t";
-                        }
-                        out += board[i][j][1]["value"];
-                    }
-                    print(out);
+                if (inputState === false) {
+                    switch_mode = "\nSwitched to input mode. Type \"clear\" to go back to normal mode.\n";
+                    inputState = true;
                 }
                 break;
             }
             case "SpielTypeError": {
-                let contents = latest["contents"];
-
-                // unused vars but I left them here in case we want to highlight in the editor
-                let line = contents["line"];
-                let column = contents["col"];
-                print(contents["message"]);
-                break;
+                res = latest["contents"]["message"]; 
+                return res;
             }
             case "SpielParseError": {
-                print(latest["tag"] + ": " + latest["contents"]); 
-                break; 
+                res = latest["contents"]["message"]; 
+                return res;
             }
-            // Error most likely
+            case "SpielTypeHole": {
+                res = latest["contents"]["message"]; 
+                return res;
+            }
             default: {
-                print(latest["tag"] + ": " + latest["contents"]); 
-                break;  
+                if (inputState === true) {
+                    switch_mode = "\nSwitched back to normal mode.\n";
+                    inputState = false;
+                }
+                break;
             }
         }
         
+        // Parse response type
+        switch (latest["contents"]["type"]) {
+            case "Board": {
+                res = get_board(latest["contents"]["value"]);
+                break;
+            } 
+            case "Tuple": {
+                res = get_tuple(latest["contents"]["value"]);
+                break;
+            }
+            default: {
+                res = latest["contents"]["value"];
+                break;
+            }
+        }
+
+        return res + switch_mode;
     }
 
-    function save(args: any, print: any) {
-        if (args._.length != 1) {
-            print("Error: Save expects only one argument: the file to be saved.");
+    // Pushes item to command's input
+    function input(next: string) {
+        commandInput.push({"input":next});
+        return;
+    }
+
+    // Sends execute command with input to back-end, then prints out using "print"
+    // function to REPL terminal
+    function executeCommand(cmd: string, print: any) {
+        console.log("EXECUTING: " + cmd + "/" + command);
+        console.log(commandInput);
+        SpielServerRequest.runCmds(props.filename, (cmd === "" ? command : cmd), commandInput)
+        .then(res => res.json())
+        .then((result) => {
+            print(parse_response(result));
+        }).catch((error) => {
+            console.log("ERROR"); 
+            print("Error:" + error);
+        });
+    }
+
+    // Run REPL command. If expecting input, put input in
+    function runCommand(cmd: string, print: any) {
+        if (inputState) {
+            input(cmd);
+            return executeCommand("", print);
         } else {
-            filename = args._[0];
-            SpielServerRequest.save(filename, code)
-                .then(res => res.json())
-                .then((result) => {
-                    print(filename + " saved successfully!");
-                }).catch((error) => {
-                    print("Error: " + error);
-                });
+            command = cmd;
+            return executeCommand(cmd, print);
         }
-        return;
     }
 
-    function restart(print: any) {
-        gameInput = [];
-        print("Restarted game successfully!");
-        return;
+    // Clear input and state
+    function clear() {
+        setCommandInput([]);
+        setInputState(false);
+        command = "";
+        //console.log(command);
+        return "Exiting input mode.";
     }
 
-    function set_game(args: any, print: any) {
-        game = "";
-        for (let i: number = 0; i < args._.length; i++) {
-            if (i != 0) {
-                game += " ";
-            }
-            game += args._[i];
-        }
-        print("Game successfully set to: " + game);
-        return;
+    function getPromptSymbol() {
+        return promptSymbol.toString();
     }
-
-    function repl_command(args: any, print: any) {
-        let command: string = "";
-        for (let i: number = 0; i < args._.length; i++) {
-            if (i != 0) {
-                command += " ";
-            }
-            command += args._[i];
-        }
-        SpielServerRequest.runCmds(filename, command, [])
-            .then(res => res.json())
-            .then((result) => {
-                parse_response(result, print);
-            }).catch((error) => {
-                print(error);
-            });
-        return;
-    }
-
-    function input(args: any, print: any) {
-        let move: string = "";
-        for (let i: number = 0; i < args._.length; i++) {
-            if (i != 0) {
-                move += " ";
-            }
-            move += args._[i];
-        }
-        let x = {
-            "input": move,
-        };
-        gameInput.push(x);
-        SpielServerRequest.runCmds(filename, game, gameInput)
-            .then(res => res.json())
-            .then((result) => {
-                parse_response(result, print);
-            }).catch((error) => {
-                print(error);
-            });
-        return;
-    }
-        
 
     return (
         <Terminal
@@ -234,35 +227,29 @@ const Run = (props) => {
             style={{ fontSize: "1.1em" }}
             showActions={false}
             commands={{
-                restart: {
-                    method: (args, print, runCommand) => restart(print),
-                },
-                save: {
-                    method: (args, print, runCommand) => save(args, print),
-                },
-                move: {
-                    method: (args, print, runCommand) => input(args, print),
-                },
-                game: {
-                    method: (args, print, runCommand) => set_game(args, print),
-                },
-                command: {
-                    method: (args, print, runCommand) => repl_command(args, print),
-                },
+                "clear": () => clear(),
+            }}
+            commandPassThrough={(cmd, print) => {
+                // Build command (cmd == array of arguments user entered with spaces separated)
+                let c = "";
+                for (var x = 0; x < cmd.length; x++) {
+                    if (x) {
+                        c += " ";
+                    }
+                    c += cmd[x];
+                }
+                if (c === "clear") {
+                    return;
+                }
+                runCommand(c, print);
             }}
             allowTabs={false}
             hideTopBar={true}
             startState={"maximised"}
+            promptSymbol={getPromptSymbol()}
         />
 
     )
-    // descriptions={{
-    //             "restart": "Syntax: restart - Restarts current game",
-    //             "save": "Syntax: save <filename> - Saves text in editor to <filename>, then sets current game file to that filename",
-    //             "move": "Syntax: move <Input> - Performs <Input> as next move. Argument must match program's Input type",
-    //             "game": "Syntax: game <function> - Sets current game to <function> that must be in current file",
-    //             "command": "Syntax: command <expression> - Performs <expression> with current file's context",
-    //         }}
 
 }
 
