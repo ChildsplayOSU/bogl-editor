@@ -74,15 +74,19 @@ const SpielNavbarNative = (props) =>
             click: () => {
                 let fn = dialog.showSaveDialogSync();
                 console.log(fn);
-                props.setFilename(fn);
-                props.save(fn);
+                if (fn != undefined) {
+                    props.setFilename(fn);
+                    props.save(fn);
+                }
               }},
             {
                 label: 'Open',
                 click: () => {
                     let fn = dialog.showOpenDialogSync()[0]; // oh no...
+                    if (fn != undefined) {
                     props.setFilename(fn);
-                    props.load(fn);
+                        props.load(fn);
+                    }
                 }
             },
             { role: 'close' }
