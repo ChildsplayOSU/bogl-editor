@@ -11,8 +11,11 @@ Libraries used:
 * [terminal-in-react](https://github.com/nitin42/terminal-in-react)
 
 ## Installation
-
-Requires ability to run [Spiel-Lang](https://github.com/The-Code-In-Sheep-s-Clothing/Spiel-Lang.git). To install, run `npm run setup`. Then, to start the front-end and back-end servers, run `npm run startProduction`. 
+- Install [Stack](https://docs.haskellstack.org/en/stable/README/), which is required for building the language and backend itself.
+- Install [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) if you don't already have it.
+- Ensure that you are running a recent version of node by checking `node --version` against the [current node releases](https://nodejs.org/en/).
+- From this project root, run `npm run setup` once. This will clone, build, and install the backend for you.
+- To start the front-end and back-end servers, you can run `npm run startProduction`. You should have a browser window open up, and you can select the Editor tab to start coding.
 
 ## Tutorial
 
