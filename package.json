@@ -35,9 +35,9 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "electron-start": "electron .",
-"build-electron": "mkdir build/src && mkdir build/resources && cp -r electron/. build/electron && cp -r resources/* build/resources/",
-"package": "electron-builder build --mac --win -c.extraMetadata.main=build/electron/main.js --publish never",
-"package-mac": "electron-builder build --mac -c.extraMetadata.main=build/electron/main.js --publish never"
+    "build-electron": "mkdir build/src && mkdir build/resources && cp -r electron/. build/electron && cp -r resources/* build/resources/",
+    "package": "electron-builder build --mac --win -c.extraMetadata.main=build/electron/main.js --publish never",
+    "package-mac": "electron-builder build --mac -c.extraMetadata.main=build/electron/main.js --publish never"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -60,9 +60,15 @@
     "typescript": "^3.8.3"
   },
   "build": {
-	  "appId": "noId",
-	  "files": ["build/**/*", "node_modules/**/*", "resources/spielserver"],
-	  "directories": {},
-	  "extraResources": ["resources"]
+    "appId": "noId",
+    "files": [
+      "build/**/*",
+      "node_modules/**/*",
+      "resources/spielserver"
+    ],
+    "directories": {},
+    "extraResources": [
+      "resources"
+    ]
   }
 }

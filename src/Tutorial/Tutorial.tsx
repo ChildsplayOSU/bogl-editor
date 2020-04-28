@@ -1,3 +1,4 @@
+// Currently not being used
 import * as React from 'react';
 import {Controlled as CodeMirror} from 'react-codemirror2';
 import 'codemirror/lib/codemirror.css';

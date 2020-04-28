@@ -17,20 +17,6 @@ Libraries used:
 - From this project root, run `npm run setup` once. This will clone, build, and install the backend for you.
 - To start the front-end and back-end servers, you can run `npm run startProduction`. You should have a browser window open up, and you can select the Editor tab to start coding.
 
-## Tutorial
-
-For specific tutorial examples, please refer to these [tutorial files](https://github.com/The-Code-In-Sheep-s-Clothing/Spiel-Lang/tree/master/examples/tutorials), which can help you get started working with this language.
-
-You can run any Spiel code from the editor with everything set up properly. First, make sure you've written any valid Spiel code in the editor.
-
-Then, you can use a series of commands to run your code:
-
- * `save <filename>`: Saves the code in the editor as a file named `<filename>.bgl` and sets running environment to that file
- * `command <expression/command>`: Runs REPL (Read, Evaluate, Print, Loop) command under the current running environment
- * `game <game loop/function call>`: Sets the current game environment to `<game loop/function call>`
- * `move <Input value>`: Adds `<Input value>` to list of moves and executes list of moves in current `game` and running environments
- * `restart`: Clears current list of moves
-
 ## Learn More
 
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
