@@ -19,6 +19,8 @@ Libraries used:
 
 ## Tutorial
 
+For specific tutorial examples, please refer to these [tutorial files](https://github.com/The-Code-In-Sheep-s-Clothing/Spiel-Lang/tree/master/examples/tutorials), which can help you get started working with this language.
+
 You can run any Spiel code from the editor with everything set up properly. First, make sure you've written any valid Spiel code in the editor.
 
 Then, you can use a series of commands to run your code:
