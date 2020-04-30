@@ -81,7 +81,7 @@ const Run = (props) => {
 
     let [commandInput, setCommandInput] = useState(Array<any>());
     let [inputState, setInputState] = useState(false);
-    
+
     code = props.code;
 
     // Build board from JSON
@@ -135,15 +135,22 @@ const Run = (props) => {
                 break;
             }
             case "SpielTypeError": {
-                res = latest["contents"]["message"]; 
+                res = latest["contents"]["message"];
                 return res;
             }
             case "SpielParseError": {
-                res = latest["contents"]["message"]; 
+                console.log("PARSE ERROR FOUND: "+latest["tag"]);
+                //res = latest["contents"]["message"];
+                // latest["contents"][0] = LINE NUM
+                // latest["contents"][1] = COLUMN NUM
+                // latest["contents"][2] = FILE NAME
+                // latest["contents"][3] = MESSAGE
+                // extract message from 4th item
+                res = "Parse Error (Typo in your file): "+latest["contents"][3];
                 return res;
             }
             case "SpielTypeHole": {
-                res = latest["contents"]["message"]; 
+                res = latest["contents"]["message"];
                 return res;
             }
             default: {
@@ -154,13 +161,13 @@ const Run = (props) => {
                 break;
             }
         }
-        
+
         // Parse response type
         switch (latest["contents"]["type"]) {
             case "Board": {
                 res = get_board(latest["contents"]["value"]);
                 break;
-            } 
+            }
             case "Tuple": {
                 res = get_tuple(latest["contents"]["value"]);
                 break;
@@ -190,7 +197,7 @@ const Run = (props) => {
         .then((result) => {
             print(parse_response(result));
         }).catch((error) => {
-            console.log("ERROR"); 
+            console.log("ERROR");
             print("Error:" + error);
         });
     }
