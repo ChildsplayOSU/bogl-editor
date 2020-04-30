@@ -55,7 +55,7 @@ class SpielServerRequest {
     // "examples/TicTacToe.bgl"
     // ["2 + 2","3 * 3","20 / 4"]
     // Runs a file with the given commands
-    static runCmds(fileToUse, command, buf) {
+    static runCmds(preludeFile, fileToUse, command, buf) {
         return fetch(SpielServerRequest.SPIEL_API+'/runCmds', {
             method: 'POST',
             //mode: 'no-cors',
@@ -64,6 +64,7 @@ class SpielServerRequest {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
+                prelude: preludeFile,
                 file: fileToUse,
                 input: command,
                 buffer: buf
@@ -76,6 +77,7 @@ class SpielServerRequest {
 let code = "";
 let command = "";
 let promptSymbol = ">";
+let preludePath = "Prelude.bglp"
 
 const Run = (props) => {
 
@@ -192,7 +194,7 @@ const Run = (props) => {
     function executeCommand(cmd: string, print: any) {
         console.log("EXECUTING: " + cmd + "/" + command);
         console.log(commandInput);
-        SpielServerRequest.runCmds(props.filename, (cmd === "" ? command : cmd), commandInput)
+        SpielServerRequest.runCmds(preludePath, props.filename, (cmd === "" ? command : cmd), commandInput)
         .then(res => res.json())
         .then((result) => {
             print(parse_response(result));
