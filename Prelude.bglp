@@ -1,2 +1,20 @@
 helloFromPrelude : Int
 helloFromPrelude = 42
+
+-- This is the BoGL Prelude. These definitions are globally accessible to all BoGL programs which
+-- load it.
+-- absolute value of an Int
+abs : Int -> Int
+abs(i) = if less(i, 0) then i * -1 else i
+
+-- greater than
+greater : (Int, Int) -> Bool
+greater(x,y) = not((or(x == y, less(x,y))))
+
+-- greater than or equal to
+geq : (Int, Int) -> Bool
+geq(x,y) = or(greater(x,y), x == y)
+
+-- less than or equal to
+leq : (Int, Int) -> Bool
+leq(x,y) = or(less(x,y), x == y)
