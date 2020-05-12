@@ -10,47 +10,21 @@ class SpielServerRequest {
     static SPIEL_API = "http://localhost:8080";
 
 
-    // creates a new file with the given content
-    // automatically adds '.bgl' to whatever the name is
-    // so 'TEST' will be 'TEST.bgl' serverside
-    // (to protect overwriting existing non-bgl files)
-    static save(fileName,content) {
-        return fetch(SpielServerRequest.SPIEL_API+'/save', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                fileName: fileName,
-                content: content,
-            }),
-        });
-    }
-
-    static read(fileName) {
-        return fetch(SpielServerRequest.SPIEL_API+'/read', {
+    static runCode(prelude_code, code, command, buf) {
+        return fetch(SpielServerRequest.SPIEL_API+'/runCode', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                fileName: fileName
+                prelude: prelude_code,
+                file: code,
+                input: command,
+                buffer: buf
             }),
-        });
+        })
     }
-
-
-    // requests the test endpoint,
-    // just to make sure things are working
-    static test() {
-        return fetch(
-            SpielServerRequest.SPIEL_API+"/test", {
-                method: "GET"
-            });
-    }
-
 
     // "examples/TicTacToe.bgl"
     // ["2 + 2","3 * 3","20 / 4"]
@@ -75,9 +49,8 @@ class SpielServerRequest {
 
 // Global strings to keep React state consistent (probably not best practice)
 let code = "";
+let codeP = "";
 let command = "";
-let promptSymbol = ">";
-let preludePath = "Prelude.bglp"
 
 const Run = (props) => {
 
@@ -85,6 +58,7 @@ const Run = (props) => {
     let [inputState, setInputState] = useState(false);
 
     code = props.code;
+    codeP = props.codeP;
 
     // Build board from JSON
     function get_board(board: Array<Array<JSON>>) {
@@ -193,8 +167,7 @@ const Run = (props) => {
     // function to REPL terminal
     function executeCommand(cmd: string, print: any) {
         console.log("EXECUTING: " + cmd + "/" + command);
-        console.log(commandInput);
-        SpielServerRequest.runCmds(preludePath, props.filename, (cmd === "" ? command : cmd), commandInput)
+        SpielServerRequest.runCode(codeP, code, (cmd === "" ? command : cmd), commandInput)
         .then(res => res.json())
         .then((result) => {
             print(parse_response(result));
@@ -224,10 +197,6 @@ const Run = (props) => {
         return "Exiting input mode.";
     }
 
-    function getPromptSymbol() {
-        return promptSymbol.toString();
-    }
-
     return (
         <Terminal
             color='white'
@@ -240,7 +209,6 @@ const Run = (props) => {
             }}
             commandPassThrough={(cmd, print) => {
                 // Build command (cmd == array of arguments user entered with spaces separated)
-                props.save();
                 let c = "";
                 for (var x = 0; x < cmd.length; x++) {
                     if (x) {
@@ -257,7 +225,6 @@ const Run = (props) => {
             allowTabs={false}
             hideTopBar={true}
             startState={"maximised"}
-            promptSymbol={getPromptSymbol()}
         />
 
     )

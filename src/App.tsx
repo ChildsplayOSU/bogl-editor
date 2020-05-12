@@ -19,13 +19,11 @@ const App: React.FC = () => {
     // Keys for local storage
     let THEME_KEY = "THEME_KEY";
     let CODE_KEY = "CODE_KEY";
-    let FILE_KEY = "FILE_KEY";
     let PRELUDE_KEY = "PRELUDE_KEY";
 
     // State functions 
     let [editorTheme, setEditorTheme] = React.useState(localStorage.getItem(THEME_KEY) || "default");
     let [code, setCode] = React.useState(localStorage.getItem(CODE_KEY) || "");
-    let [filename, setFilename] = React.useState(localStorage.getItem(FILE_KEY) || Math.random().toString());
     let [codeP, setCodeP] = React.useState(localStorage.getItem(PRELUDE_KEY) || "");
 
     function setTheme(theme: string) {
@@ -44,20 +42,10 @@ const App: React.FC = () => {
     // Updates on change of code or filename
     useEffect(() => {
         updateCode(code);
-        setFilename(filename);
+        updateCodeP(codeP);
         localStorage.setItem(CODE_KEY, code);
-    }, [code, filename]);
-
-    // Save function: saves file, sets filename to be run, and  
-    function save() {
-        localStorage.setItem(FILE_KEY, filename);
-        SpielServerRequest.save(filename, code)
-        .then(res => res.json()).then((result) => { 
-            console.log("saved: " + filename); 
-            console.log(result); 
-        }).catch((error) => alert("Error connecting with server: " + error));
-        return;
-    }
+        localStorage.setItem(PRELUDE_KEY, codeP);
+    }, [code, codeP]);
 
     // Parent to Editor, Tutorial, and Run (terminal)
     return (
@@ -68,10 +56,10 @@ const App: React.FC = () => {
                     <Col className="move-down tall" sm={8}>
 			<Route className="CodeMirror" exact path="/" render={(props) => 
                             <Tabs defaultActiveKey="Code" transition={false} id="uncontrolled-tab-example">
-                                <Tab eventKey="Code" title="Code">
+                                <Tab hidden={false} eventKey="Code" title="Code">
                                     <SpielEditor {...props} code={code} editorTheme={editorTheme} updateCode={updateCode}/>
                                 </Tab>
-                                <Tab eventKey="Prelude" title="Prelude">
+                                <Tab hidden={false} eventKey="Prelude" title="Prelude">
                                     <SpielEditor {...props} code={codeP} editorTheme={editorTheme} updateCode={updateCodeP}/>
                                 </Tab>
                             </Tabs>
@@ -79,7 +67,7 @@ const App: React.FC = () => {
                         <Route exact path="/tutorial" render={(props) => <Tutorial {...props} editorTheme={editorTheme} />} />
                     </Col>
                     <Col className="move-down tall" sm={4}>
-                        <Run save={save} code={code} filename={filename} />
+                        <Run code={code} codeP={codeP} />
                     </Col>
                 </Row>
             </Router>
