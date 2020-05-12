@@ -24,7 +24,7 @@ const App: React.FC = () => {
     let [editorTheme, setEditorTheme] = React.useState(localStorage.getItem(THEME_KEY) || "default");
     let [code, setCode] = React.useState(localStorage.getItem(CODE_KEY) || "");
     let [codeP, setCodeP] = React.useState(localStorage.getItem(PRELUDE_KEY) || "");
-    let [P, setP] = React.useState(true);
+    let [P, setP] = React.useState(false);
 
     function setTheme(theme: string) {
         setEditorTheme(theme);
