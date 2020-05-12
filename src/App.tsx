@@ -13,7 +13,6 @@ import Container from 'react-bootstrap/Container';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 
-
 const App: React.FC = () => {
 
     // Keys for local storage
@@ -25,6 +24,7 @@ const App: React.FC = () => {
     let [editorTheme, setEditorTheme] = React.useState(localStorage.getItem(THEME_KEY) || "default");
     let [code, setCode] = React.useState(localStorage.getItem(CODE_KEY) || "");
     let [codeP, setCodeP] = React.useState(localStorage.getItem(PRELUDE_KEY) || "");
+    let [P, setP] = React.useState(true);
 
     function setTheme(theme: string) {
         setEditorTheme(theme);
@@ -45,7 +45,12 @@ const App: React.FC = () => {
         updateCodeP(codeP);
         localStorage.setItem(CODE_KEY, code);
         localStorage.setItem(PRELUDE_KEY, codeP);
-    }, [code, codeP]);
+    }, [code, codeP, P]);
+
+    // Set prelude code or regular code to be displayed
+    function go(k: string) {
+        setP(k == "Prelude");
+    }
 
     // Parent to Editor, Tutorial, and Run (terminal)
     return (
@@ -55,14 +60,13 @@ const App: React.FC = () => {
                 <Row noGutters={true}>
                     <Col className="move-down tall" sm={8}>
 			<Route className="CodeMirror" exact path="/" render={(props) => 
-                            <Tabs defaultActiveKey="Code" transition={false} id="uncontrolled-tab-example">
-                                <Tab hidden={false} eventKey="Code" title="Code">
-                                    <SpielEditor {...props} code={code} editorTheme={editorTheme} updateCode={updateCode}/>
-                                </Tab>
-                                <Tab hidden={false} eventKey="Prelude" title="Prelude">
-                                    <SpielEditor {...props} code={codeP} editorTheme={editorTheme} updateCode={updateCodeP}/>
-                                </Tab>
-                            </Tabs>
+                            <>
+                                <Tabs defaultActiveKey="Prelude" transition={false} id="uncontrolled-tab-example" onSelect={(k) => go(k)}>
+                                    <Tab eventKey="Code" title="Code"></Tab>
+                                    <Tab eventKey="Prelude" title="Prelude"></Tab>
+                                </Tabs>
+                                <SpielEditor {...props} code={(P ? codeP : code)} editorTheme={editorTheme} updateCode={(P ? updateCodeP : updateCode)}/>
+                            </>
                         } />
                         <Route exact path="/tutorial" render={(props) => <Tutorial {...props} editorTheme={editorTheme} />} />
                     </Col>
