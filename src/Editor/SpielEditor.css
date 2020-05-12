@@ -1,7 +1,14 @@
 .react-codemirror2, .ReactCodeMirror, .CodeMirror {
-    height: 100vh; 
+    height: 100vh;
     width: 66.666%;
     position: fixed;
+    /** added to fix weird scrolling at bottom
+      * adds about 2 code line's worth of padding (25px * 2)
+      * + 10px to give a nice padd at the bottom.
+      * I believe the original bug was about the 'auto'
+      * jump to code feature of codemirror, which was misbehaving
+      * on the low edge where there was nowhere else to go */
+    padding-bottom: 60px;
 }
 
 .move-down {
