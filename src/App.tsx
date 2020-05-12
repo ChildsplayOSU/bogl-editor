@@ -22,7 +22,7 @@ const App: React.FC = () => {
     // State functions 
     let [editorTheme, setEditorTheme] = React.useState(localStorage.getItem(THEME_KEY) || "default");
     let [code, setCode] = React.useState(localStorage.getItem(CODE_KEY) || "");
-    let [filename, setFilename] = React.useState(localStorage.getItem(FILE_KEY) || "");
+    let [filename, setFilename] = React.useState(localStorage.getItem(FILE_KEY) || Math.random().toString());
 
     function setTheme(theme: string) {
         setEditorTheme(theme);
@@ -51,29 +51,18 @@ const App: React.FC = () => {
         return;
     }
 
-    // Load function: loads file from back end
-    function load() {
-        SpielServerRequest.read(filename)
-        .then(res => res.json()).then((result) => {
-            console.log("loaded: " + filename);
-            setCode(result["content"]);
-            setFilename(result["fileName"]);
-        }).catch((error) => alert("Error: Please make sure that the filename is correct (" + error + ")"));
-        return;
-    }
-
     // Parent to Editor, Tutorial, and Run (terminal)
     return (
         <>
             <Router>
-                <SpielNavbar load={load} filename={filename} setFilename={setFilename} save={save} setTheme={setTheme} />
+                <SpielNavbar setTheme={setTheme} />
                 <Row noGutters={true}>
                     <Col className="move-down tall" sm={8}>
                         <Route className="CodeMirror" exact path="/" render={(props) => <SpielEditor {...props} code={code} editorTheme={editorTheme} updateCode={updateCode}/> } />
                         <Route exact path="/tutorial" render={(props) => <Tutorial {...props} editorTheme={editorTheme} />} />
                     </Col>
                     <Col className="move-down tall" sm={4}>
-                        <Run code={code} filename={filename} />
+                        <Run save={save} code={code} filename={filename} />
                     </Col>
                 </Row>
             </Router>

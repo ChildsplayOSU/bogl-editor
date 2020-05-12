@@ -240,6 +240,7 @@ const Run = (props) => {
             }}
             commandPassThrough={(cmd, print) => {
                 // Build command (cmd == array of arguments user entered with spaces separated)
+                props.save();
                 let c = "";
                 for (var x = 0; x < cmd.length; x++) {
                     if (x) {
@@ -248,6 +249,7 @@ const Run = (props) => {
                     c += cmd[x];
                 }
                 if (c === "clear") {
+                    clear();
                     return;
                 }
                 runCommand(c, print);
