@@ -84,7 +84,14 @@ const Run = (props) => {
             }
             if (tuple[i]["type"] === "Tuple") {
                 res += "(" + get_tuple(tuple[i]["value"]) + ")";
-            } else {
+            }
+            else if (tuple[i]["type"] === "Board") {
+                res += "\n\n";
+                res += get_board(tuple[i]["value"]);
+                res += "\n";
+            }
+            else
+            {
                 res += tuple[i]["value"].toString();
             }
         }
@@ -97,7 +104,7 @@ const Run = (props) => {
         let latest: JSON = responses[responses.length-1];
         let res: string = "";
         let switch_mode: string = "";
-
+        let boards: string = "";
         console.log(responses);
         console.log(latest);
 
@@ -108,7 +115,8 @@ const Run = (props) => {
                     switch_mode = "\nSwitched to input mode. Type \"clear\" to go back to normal mode.\n";
                     inputState = true;
                 }
-                break;
+                latest["contents"].forEach(b => boards = boards + get_board(b["value"]) + "\n");
+                return boards + switch_mode;
             }
             case "SpielTypeError": {
                 res = latest["contents"]["message"];
@@ -138,23 +146,36 @@ const Run = (props) => {
             }
         }
 
+        // {"tag" : <tag> contents : [{"value" : <array of buffered boards>},
+        //                            { <value from running the computation> }]
+
         // Parse response type
-        switch (latest["contents"]["type"]) {
+        switch (latest["contents"][1]["type"]) {
             case "Board": {
-                res = get_board(latest["contents"]["value"]);
+                res = get_board(latest["contents"][1]["value"]);
                 break;
             }
             case "Tuple": {
-                res = get_tuple(latest["contents"]["value"]);
+                res = get_tuple(latest["contents"][1]["value"]);
                 break;
             }
             default: {
-                res = latest["contents"]["value"];
+                res = latest["contents"][1]["value"];
                 break;
             }
         }
 
-        return res + switch_mode;
+        latest["contents"][0].forEach(b => extendBoardsString(b, res, boards));
+        return boards + res + switch_mode;
+    }
+
+    // an expression like place(1,b,(1,1)) evaluates to a board and it also adds the same board to
+    // the print buffer. This makes sure we do not print duplicate boards.
+    // an expression could modify two boards to be identical, in that case it may be confusing to
+    // only print one board, but that is a much less common use case that the first one.
+    function extendBoardsString(board, value, boards) {
+        var boardStr = get_board(board["value"]);
+        if (boardStr != value) boards = boards + boardStr + value + "\n";
     }
 
     // Pushes item to command's input
