@@ -8,7 +8,7 @@
       * I believe the original bug was about the 'auto'
       * jump to code feature of codemirror, which was misbehaving
       * on the low edge where there was nowhere else to go */
-    padding-bottom: 60px;
+    padding-bottom: 100px;
 }
 
 .move-down {
