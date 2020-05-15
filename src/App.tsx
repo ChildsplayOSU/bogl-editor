@@ -61,7 +61,7 @@ const App: React.FC = () => {
                     <Col className="move-down tall" sm={8}>
 			<Route className="CodeMirror" exact path="/" render={(props) => 
                             <>
-                                <Tabs defaultActiveKey="Prelude" transition={false} id="uncontrolled-tab-example" onSelect={(k) => go(k)}>
+                                <Tabs defaultActiveKey="Code" transition={false} id="uncontrolled-tab-example" onSelect={(k) => go(k)}>
                                     <Tab eventKey="Code" title="Code"></Tab>
                                     <Tab eventKey="Prelude" title="Prelude"></Tab>
                                 </Tabs>
