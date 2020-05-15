@@ -138,6 +138,7 @@ const Run = (props) => {
                 return res;
             }
             default: {
+                // Else it's a SpielValue
                 if (inputState === true) {
                     switch_mode = "\nSwitched back to normal mode.\n";
                     inputState = false;
@@ -145,9 +146,6 @@ const Run = (props) => {
                 break;
             }
         }
-
-        // {"tag" : <tag> contents : [{"value" : <array of buffered boards>},
-        //                            { <value from running the computation> }]
 
         // Parse response type
         switch (latest["contents"][1]["type"]) {

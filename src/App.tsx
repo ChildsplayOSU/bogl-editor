@@ -68,7 +68,6 @@ const App: React.FC = () => {
                                 <SpielEditor {...props} code={(P ? codeP : code)} editorTheme={editorTheme} updateCode={(P ? updateCodeP : updateCode)}/>
                             </>
                         } />
-                        <Route exact path="/tutorial" render={(props) => <Tutorial {...props} editorTheme={editorTheme} />} />
                     </Col>
                     <Col className="move-down tall" sm={4}>
                         <Run code={code} codeP={codeP} />

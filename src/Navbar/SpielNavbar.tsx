@@ -39,7 +39,6 @@ const SpielNavbar = (props) => {
             <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="mr-auto">
                     <Nav.Link as={Link} to="/">Editor</Nav.Link>
-                    <Nav.Link as={Link} to="/tutorial">Tutorial</Nav.Link>
                     <NavDropdown title="Themes" id="basic-nav-dropdown">
                         {getThemes()}
                     </NavDropdown>
