@@ -30,7 +30,7 @@
   },
   "scripts": {
     "setup": "npm install && git clone https://github.com/The-Code-In-Sheep-s-Clothing/Spiel-Lang.git && cd Spiel-Lang && stack build && stack install",
-    "start": "react-scripts start",
+    "start": "PORT=5168 react-scripts start",
     "startProduction": "(react-scripts start &>/dev/null &) && spielserver",
     "stopProduction": "react-scripts stop",
     "build": "react-scripts build",
