@@ -7,7 +7,7 @@ import Terminal from 'terminal-in-react';
 class SpielServerRequest {
 
     // Change to Backend API
-    static SPIEL_API = "http://localhost:8080";
+    static SPIEL_API = "/api_1";
 
 
     static runCode(prelude_code, code, command, buf) {
