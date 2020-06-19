@@ -12,7 +12,7 @@ import './SpielNavbar.css';
 const SpielNavbar = (props) => {
 
     // Themes available
-    const themes: Array<string> = ["default", "midnight", "gruvbox-dark", "solarized", "nord"]; 
+    const themes: Array<string> = ["default", "midnight", "gruvbox-dark", "solarized", "nord"];
 
     // Generate theme list to be used in drop down
     function getThemes() {
@@ -21,7 +21,7 @@ const SpielNavbar = (props) => {
             navitems.push(<NavDropdown.Item onClick={() => props.setTheme(themes[i]) }>{ themes[i] }</NavDropdown.Item>);
 
         }
-        return navitems; 
+        return navitems;
     }
 
     // When users press enter to submit save request, automatically reloads page
@@ -34,7 +34,7 @@ const SpielNavbar = (props) => {
     // Uses React-Router to change page
     return (
         <Navbar bg="danger" variant="dark" expand="lg" fixed="top">
-            <Navbar.Brand>Spiel Language</Navbar.Brand>
+            <Navbar.Brand>BoGL: Board Game Language</Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="mr-auto">

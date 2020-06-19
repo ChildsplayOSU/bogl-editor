@@ -1,6 +1,6 @@
 {
-  "short_name": "Spiel",
-  "name": "Spiel Language",
+  "short_name": "BoGL",
+  "name": "BoGL: Board Game Language",
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#000000",

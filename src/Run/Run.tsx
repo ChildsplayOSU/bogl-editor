@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import Terminal from 'terminal-in-react';
 
 // Class for representing requests
-// that can be made to the Spiel Language Server
+// that can be made to the BoGL Server
 class SpielServerRequest {
 
     // Change to Backend API
