@@ -20,7 +20,7 @@ const App: React.FC = () => {
     let CODE_KEY = "CODE_KEY";
     let PRELUDE_KEY = "PRELUDE_KEY";
 
-    // State functions 
+    // State functions
     let [editorTheme, setEditorTheme] = React.useState(localStorage.getItem(THEME_KEY) || "default");
     let [code, setCode] = React.useState(localStorage.getItem(CODE_KEY) || "");
     let [codeP, setCodeP] = React.useState(localStorage.getItem(PRELUDE_KEY) || "");
@@ -56,10 +56,10 @@ const App: React.FC = () => {
     return (
         <>
             <Router>
-                <SpielNavbar setTheme={setTheme} />
+                <SpielNavbar setTheme={setTheme} setCode={setCode} />
                 <Row noGutters={true}>
                     <Col className="move-down tall" sm={8}>
-			<Route className="CodeMirror" exact path="/" render={(props) => 
+			<Route className="CodeMirror" exact path="/" render={(props) =>
                             <>
                                 <Tabs defaultActiveKey="Code" transition={false} id="uncontrolled-tab-example" onSelect={(k) => go(k)}>
                                     <Tab eventKey="Code" title="Code"></Tab>
