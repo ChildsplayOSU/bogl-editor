@@ -156,14 +156,14 @@ const Run = (props) => {
                 return res;
             }
             case "SpielParseError": {
-                console.log("PARSE ERROR FOUND: "+latest["tag"]);
+                console.log("Language (Parse) Error Found: "+latest["tag"]);
                 //res = latest["contents"]["message"];
                 // latest["contents"][0] = LINE NUM
                 // latest["contents"][1] = COLUMN NUM
                 // latest["contents"][2] = FILE NAME
                 // latest["contents"][3] = MESSAGE
                 // extract message from 4th item
-                res = "Parse Error (Typo in your file): "+latest["contents"][3];
+                res = "Language Error: "+latest["contents"][3];
                 return res;
             }
             case "SpielTypeHole": {
