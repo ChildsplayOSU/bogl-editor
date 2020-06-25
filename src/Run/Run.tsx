@@ -10,6 +10,59 @@ class SpielServerRequest {
     static SPIEL_API = "/api_1";
 
 
+    // Access the test endpoint, checks if the server is online
+    static test() {
+      return fetch(SpielServerRequest.SPIEL_API+'/test', {method: 'GET'});
+    }
+
+
+    // Saves contents to a given filename
+    static share(preludeContent, gamefileContent) {
+      return fetch(SpielServerRequest.SPIEL_API+'/share', {
+          method: 'POST',
+          headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+              preludeContent: preludeContent,
+              gameContent: gamefileContent
+          })
+      });
+    }
+
+
+    // Used to load up both a prelude & gamefile simultaneously
+    static load(id) {
+      return fetch(SpielServerRequest.SPIEL_API+'/load', {
+          method: 'POST',
+          headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+              fileName: id
+          })
+      });
+    }
+
+
+    // Reads a file by the given name
+    static read(filename) {
+      return fetch(SpielServerRequest.SPIEL_API+'/read', {
+          method: 'POST',
+          headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+              path: filename
+          })
+      });
+    }
+
+
+    // Runs a command on a given prelude and gamefile contents, with input as well
     static runCode(prelude_code, code, command, buf) {
         return fetch(SpielServerRequest.SPIEL_API+'/runCode', {
             method: 'POST',
@@ -20,26 +73,6 @@ class SpielServerRequest {
             body: JSON.stringify({
                 prelude: prelude_code,
                 file: code,
-                input: command,
-                buffer: buf
-            }),
-        })
-    }
-
-    // "examples/TicTacToe.bgl"
-    // ["2 + 2","3 * 3","20 / 4"]
-    // Runs a file with the given commands
-    static runCmds(preludeFile, fileToUse, command, buf) {
-        return fetch(SpielServerRequest.SPIEL_API+'/runCmds', {
-            method: 'POST',
-            //mode: 'no-cors',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                prelude: preludeFile,
-                file: fileToUse,
                 input: command,
                 buffer: buf
             }),

@@ -18,7 +18,7 @@ const SpielNavbar = (props) => {
     function getThemes() {
         let navitems: Array<JSX.Element> = [];
         for (let i = 0; i < themes.length; i++) {
-            navitems.push(<NavDropdown.Item onClick={() => props.setTheme(themes[i]) }>{ themes[i] }</NavDropdown.Item>);
+            navitems.push(<NavDropdown.Item key={i} onClick={() => props.setTheme(themes[i]) }>{ themes[i] }</NavDropdown.Item>);
 
         }
         return navitems;
@@ -29,6 +29,26 @@ const SpielNavbar = (props) => {
         // This disables reload
         e.preventDefault();
         props.save();
+    }
+
+    function getShareOption() {
+      if(props.getShareLink() != "") {
+        // share link is set
+        return <Form.Control type="email" value={window.location.href + "?p=" + props.getShareLink()}/>
+
+      } else {
+        // share link has not been generated yet
+        return <Button variant="outline-light" title="Generates share link for Prelude" type="button" onClick={() => props.sharePrelude().then(function(result) {
+          if(result[0].tag == "SpielSuccess") {
+            props.setShareLink(result[0].contents);
+          } else {
+            alert("Unable to share!");
+          }
+        }).catch(function(err) {
+          alert("Failed to share!");
+        })}>Share</Button>
+      }
+
     }
 
     // Uses React-Router to change page
@@ -43,6 +63,9 @@ const SpielNavbar = (props) => {
                         {getThemes()}
                     </NavDropdown>
                 </Nav>
+                <Form inline>
+                  {getShareOption()}
+                </Form>
             </Navbar.Collapse>
         </Navbar>
     );
