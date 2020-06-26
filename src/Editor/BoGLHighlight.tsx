@@ -1,5 +1,5 @@
 //
-// BoGLHighlighting.tsx
+// BoGLHighlight.tsx
 //
 // Syntax Highlighting for BoGL
 //
@@ -196,7 +196,7 @@ function BoGLHighlight() {
     setType("builtin",
       ["Bool","False","True","Int","Board","Array","Input","Player"]);
 
-    // highlight built-in functions (w/ a green color)
+    // highlight built-in functions
     setType("builtin",
       ["input","place","remove","countBoard","countCol","countRow","countDiag","isFull","inARow","next","not","or","and","less"]);
 
