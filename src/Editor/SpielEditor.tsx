@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import {Controlled as CodeMirror} from 'react-codemirror2';
 import 'codemirror/lib/codemirror.css';
-//import '../SpielHighlight';
-import 'codemirror/mode/haskell/haskell';
 
 import Container from 'react-bootstrap/Container';
+import BoGLHighlight from './BoGLHighlight';
 
 import 'codemirror/theme/midnight.css';
 import 'codemirror/theme/gruvbox-dark.css';
@@ -13,7 +12,7 @@ import 'codemirror/theme/nord.css';
 
 import './SpielEditor.css';
 
-const SpielEditor = (props) => { 
+const SpielEditor = (props) => {
 
     let [editor, setEditor] = React.useState();
 
@@ -23,17 +22,21 @@ const SpielEditor = (props) => {
 
     return (
         <>
-            <CodeMirror 
+            <CodeMirror
                 value={props.code}
                 onBeforeChange={(editor, data, value) => {
-                    updateCode(value); 
+                    updateCode(value);
+                }}
+                defineMode={{
+                  name: 'bogl',
+                  fn: BoGLHighlight
                 }}
                 options={{
                     lineWrapping: true,
                     tabSize: 3,
                     lineNumbers: true,
-                    mode: 'haskell',
-                    theme: props.editorTheme, 
+                    mode: 'bogl',
+                    theme: props.editorTheme,
                     readOnly: false
                 }}
 
