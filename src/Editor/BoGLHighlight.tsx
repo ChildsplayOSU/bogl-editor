@@ -182,7 +182,7 @@ function BoGLHighlight() {
 
     // literal keywords
     setType("keyword",
-      ["do", "if", "then", "else", "in", "let", "of", "type", "where", "game", "break"]);
+      ["do", "if", "then", "else", "in", "let", "of", "type", "where", "game", "break", "while"]);
 
     // keyword sequences
     setType("keyword",
