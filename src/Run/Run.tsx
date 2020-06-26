@@ -112,7 +112,7 @@ const Run = (props) => {
         switch (latest["tag"]) {
             case "SpielPrompt": {
                 if (inputState === false) {
-                    switch_mode = "\nSwitched to input mode. Type \"clear\" to go back to normal mode.\n";
+                    switch_mode = "\n[ 🤖 BoGL Says: Enter input, or \"clear\" to stop. ]\n";
                     inputState = true;
                 }
                 latest["contents"].forEach(b => boards = boards + get_board(b["value"]) + "\n");
@@ -140,7 +140,7 @@ const Run = (props) => {
             default: {
                 // Else it's a SpielValue
                 if (inputState === true) {
-                    switch_mode = "\nSwitched back to normal mode.\n";
+                    switch_mode = "\n[ 🤖 BoGL Says: Done reading input. ]\n";
                     inputState = false;
                 }
                 break;
@@ -185,14 +185,45 @@ const Run = (props) => {
     // Sends execute command with input to back-end, then prints out using "print"
     // function to REPL terminal
     function executeCommand(cmd: string, print: any) {
-        console.log("EXECUTING: " + cmd + "/" + command);
+        let respStatus = 0;
         SpielServerRequest.runCode(codeP, code, (cmd === "" ? command : cmd), commandInput)
-        .then(res => res.json())
-        .then((result) => {
-            print(parse_response(result));
+        .then(function(res) {
+          // decode this response
+          console.dir(res);
+          respStatus = res.status;
+          return res.json();
+
+        }).then((result) => {
+          // valid response to print
+          print(parse_response(result));
+
         }).catch((error) => {
-            console.log("ERROR");
-            print("Error:" + error);
+          if((error instanceof SyntaxError || (error.name && error.name == "SyntaxError")) && respStatus == 504) {
+            // gateway timeout
+            console.dir(error);
+            print("[ 🤖 BoGL Says: I am offline, please check back later! ]");
+
+          } else if((error instanceof SyntaxError || (error.name && error.name == "SyntaxError"))) {
+            // bad parse error
+            console.dir(error);
+            print("[ 🤖 BoGL Says: Your program was unable to be understood. Please double check it and try again! ]");
+
+          } else if((error instanceof TypeError || (error.name && error.name == "TypeError")) && respStatus == 0) {
+            // likely JS disabled
+            console.dir(error);
+            print("[ 🤖 BoGL Says: Unable to execute your program. Make sure that Javascript is enabled and try again! ]");
+
+          } else if((error instanceof TypeError || (error.name && error.name == "TypeError"))) {
+            // something else?
+            console.dir(error);
+            print("[ 🤖 BoGL Says: Unable to execute your program, please double check your code and try again. ]");
+
+          } else {
+            // general error
+            console.dir(error);
+            print("[ 🤖 BoGL Says: An error occurred: " + error + " ]");
+
+          }
         });
     }
 
@@ -213,7 +244,7 @@ const Run = (props) => {
         setInputState(false);
         command = "";
         //console.log(command);
-        return "Exiting input mode.";
+        return "[ 🤖 BoGL Says: Ok, skipping input. ]";
     }
 
     return (
