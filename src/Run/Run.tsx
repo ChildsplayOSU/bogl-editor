@@ -201,7 +201,7 @@ const Run = (props) => {
           if((error instanceof SyntaxError || (error.name && error.name == "SyntaxError")) && respStatus == 504) {
             // gateway timeout
             console.dir(error);
-            print("[ 🤖 BoGL Says: I am offline, please check back later! ]");
+            print("[ 🤖 BoGL Says: Unable to finish running your program, or not currently online. Double check your code, or check back later! ]");
 
           } else if((error instanceof SyntaxError || (error.name && error.name == "SyntaxError"))) {
             // bad parse error
