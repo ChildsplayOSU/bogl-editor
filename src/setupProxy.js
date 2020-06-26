@@ -19,6 +19,26 @@ module.exports = function(app) {
     })
   );
 
+  // saving
+  app.use(
+    '/api_1/share',
+    createProxyMiddleware({
+      target: 'http://localhost:5174/share',
+      changeOrigin: true,
+      ignorePath: true
+    })
+  );
+
+  // loading
+  app.use(
+    '/api_1/load',
+    createProxyMiddleware({
+      target: 'http://localhost:5174/load',
+      changeOrigin: true,
+      ignorePath: true
+    })
+  );
+
   // attempts to run this code under the local instance
   app.use(
     '/api_1/runCode',
