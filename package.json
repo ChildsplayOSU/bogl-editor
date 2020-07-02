@@ -1,6 +1,6 @@
 {
   "name": "spiel-front",
-  "version": "0.1.0",
+  "version": "1.0.1",
   "homepage": "./",
   "private": true,
   "dependencies": {
@@ -30,9 +30,9 @@
     "webpack": "4.41.2"
   },
   "scripts": {
-    "setup": "npm install && git clone https://github.com/The-Code-In-Sheep-s-Clothing/Spiel-Lang.git && cd Spiel-Lang && stack build && stack install",
+    "setup": "npm install && cd .. && git clone https://github.com/The-Code-In-Sheep-s-Clothing/Spiel-Lang.git && cd Spiel-Lang && stack build && stack install",
     "start": "PORT=5168 react-scripts start",
-    "startProduction": "(react-scripts start &>/dev/null &) && spielserver",
+    "startProduction": "(react-scripts start &>/dev/null &) && spielserver 5174",
     "stopProduction": "react-scripts stop",
     "build": "react-scripts build",
     "test": "react-scripts test",
