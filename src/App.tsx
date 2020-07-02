@@ -57,14 +57,14 @@ const App: React.FC = () => {
             window.location.href = '/';
 
           } else {
-            console.dir(result);
+            //console.dir(result);
             console.error("Error: "+result.contents);
             alert("Couldn't load in prelude and gamefile!");
           }
 
         }).catch(function(err) {
           // unable to load
-          console.dir(err);
+          //console.dir(err);
           alert("Unable to load specific prelude and gamefile! Using what you last had.");
 
         })
