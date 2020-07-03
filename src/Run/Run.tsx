@@ -138,8 +138,8 @@ const Run = (props) => {
         let res: string = "";
         let switch_mode: string = "";
         let boards: string = "";
-        console.log(responses);
-        console.log(latest);
+        //console.log(responses);
+        //console.log(latest);
 
         // Check if inputState switched
         switch (latest["tag"]) {
@@ -165,6 +165,11 @@ const Run = (props) => {
                 // extract message from 4th item
                 res = "Language Error: "+latest["contents"][3];
                 return res;
+            }
+            case "SpielRuntimeError": {
+              console.log("Runtime error encountered: "+ latest["contents"]);
+              res = "Runtime Error: "+latest["contents"];
+              return res;
             }
             case "SpielTypeHole": {
                 res = latest["contents"]["message"];
@@ -222,7 +227,7 @@ const Run = (props) => {
         SpielServerRequest.runCode(codeP, code, (cmd === "" ? command : cmd), commandInput)
         .then(function(res) {
           // decode this response
-          console.dir(res);
+          //console.dir(res);
           respStatus = res.status;
           return res.json();
 
@@ -233,27 +238,27 @@ const Run = (props) => {
         }).catch((error) => {
           if((error instanceof SyntaxError || (error.name && error.name == "SyntaxError")) && respStatus == 504) {
             // gateway timeout
-            console.dir(error);
+            //console.dir(error);
             print("[ 🤖 BoGL Says: Unable to finish running your program, or not currently online. Double check your code, or check back later! ]");
 
           } else if((error instanceof SyntaxError || (error.name && error.name == "SyntaxError"))) {
             // bad parse error
-            console.dir(error);
+            //console.dir(error);
             print("[ 🤖 BoGL Says: Your program was unable to be understood. Please double check it and try again! ]");
 
           } else if((error instanceof TypeError || (error.name && error.name == "TypeError")) && respStatus == 0) {
             // likely JS disabled
-            console.dir(error);
+            //console.dir(error);
             print("[ 🤖 BoGL Says: Unable to execute your program. Make sure that Javascript is enabled and try again! ]");
 
           } else if((error instanceof TypeError || (error.name && error.name == "TypeError"))) {
             // something else?
-            console.dir(error);
+            //console.dir(error);
             print("[ 🤖 BoGL Says: Unable to execute your program, please double check your code and try again. ]");
 
           } else {
             // general error
-            console.dir(error);
+            //console.dir(error);
             print("[ 🤖 BoGL Says: An error occurred: " + error + " ]");
 
           }
