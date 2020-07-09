@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 // import Form from 'react-bootstrap/Form';
 import Terminal from 'terminal-in-react';
 
@@ -211,7 +211,7 @@ const Run = (props) => {
     // only print one board, but that is a much less common use case that the first one.
     function extendBoardsString(board, value, boards) {
         var boardStr = get_board(board["value"]);
-        if (boardStr != value) boards = boards + boardStr + value + "\n";
+        if (boardStr !== value) boards = boards + boardStr + value + "\n";
     }
 
     // Pushes item to command's input
@@ -236,22 +236,22 @@ const Run = (props) => {
           print(parse_response(result));
 
         }).catch((error) => {
-          if((error instanceof SyntaxError || (error.name && error.name == "SyntaxError")) && respStatus == 504) {
+          if((error instanceof SyntaxError || (error.name && error.name === "SyntaxError")) && respStatus === 504) {
             // gateway timeout
             //console.dir(error);
             print("[ 🤖 BoGL Says: Unable to finish running your program, or not currently online. Double check your code, or check back later! ]");
 
-          } else if((error instanceof SyntaxError || (error.name && error.name == "SyntaxError"))) {
+          } else if((error instanceof SyntaxError || (error.name && error.name === "SyntaxError"))) {
             // bad parse error
             //console.dir(error);
             print("[ 🤖 BoGL Says: Your program was unable to be understood. Please double check it and try again! ]");
 
-          } else if((error instanceof TypeError || (error.name && error.name == "TypeError")) && respStatus == 0) {
+          } else if((error instanceof TypeError || (error.name && error.name === "TypeError")) && respStatus === 0) {
             // likely JS disabled
             //console.dir(error);
             print("[ 🤖 BoGL Says: Unable to execute your program. Make sure that Javascript is enabled and try again! ]");
 
-          } else if((error instanceof TypeError || (error.name && error.name == "TypeError"))) {
+          } else if((error instanceof TypeError || (error.name && error.name === "TypeError"))) {
             // something else?
             //console.dir(error);
             print("[ 🤖 BoGL Says: Unable to execute your program, please double check your code and try again. ]");

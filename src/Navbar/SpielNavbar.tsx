@@ -2,11 +2,10 @@ import * as React from 'react';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown';
-import { BrowserRouter as NavLink, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Form from 'react-bootstrap/Form';
-import FormControl from 'react-bootstrap/FormControl';
 import Button from 'react-bootstrap/Button';
-import SpielEditor from '../Editor/SpielEditor';
+import Share from './Share';
 
 import './SpielNavbar.css';
 
@@ -20,13 +19,12 @@ const SpielNavbar = (props) => {
         let navitems: Array<JSX.Element> = [];
         for (let i = 0; i < themes.length; i++) {
             navitems.push(<NavDropdown.Item key={i} onClick={() => props.setTheme(themes[i]) }>{ themes[i] }</NavDropdown.Item>);
-
         }
         return navitems;
     }
 
     // examples available
-    const boglExamples: Array<Array<string>> = [
+    let boglExamples: Array<Array<string>> = [
       ["Simplest Program","-- Simple Program example\ngame Simple\ntype Board = Array(1,1) of Int\ntype Input = Int"],
       ["Function", "--example of a function\ngame FunctionExample\ntype Board = Array(1,1) of Int\ntype Input = Int\n\nf : Int\nf = 1"],
       ["Function with Parameter", "--example of a function that takes a parameter\ngame FunctionParamExample\ntype Board = Array(1,1) of Int\ntype Input = Int\n\n--adds 1 to whatever number we give this function\nf : Int -> Int\nf(x) = x + 1"],
@@ -45,22 +43,16 @@ const SpielNavbar = (props) => {
         return navitems;
     }
 
-    // When users press enter to submit save request, automatically reloads page
-    function handleSubmit(e: any) {
-        // This disables reload
-        e.preventDefault();
-        props.save();
-    }
 
     function getShareOption() {
-      if(props.getShareLink() != "") {
-        // share link is set
-        return <Form.Control type="email" value={window.location.href + "?p=" + props.getShareLink()}/>
+      if(props.getShareLink() !== "") {
+        // share link is ready to display, show it!
+        return <Share shareLink={props.getShareLink()}/>;
 
       } else {
-        // share link has not been generated yet
-        return <Button variant="outline-light" title="Generates share link for Prelude" type="button" onClick={() => props.sharePrelude().then(function(result) {
-          if(result[0].tag == "SpielSuccess") {
+        // share link has NOT been generated yet
+        return <Button variant="outline-light" title="Generates share link for Prelude" type="button" onClick={(e) => props.sharePrelude().then(function(result) {
+          if(result[0].tag === "SpielSuccess") {
             props.setShareLink(result[0].contents);
           } else {
             alert("Unable to share!");

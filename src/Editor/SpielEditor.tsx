@@ -1,10 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import {Controlled as CodeMirror} from 'react-codemirror2';
 import 'codemirror/lib/codemirror.css';
-
-import Container from 'react-bootstrap/Container';
 import BoGLHighlight from './BoGLHighlight';
-
 import 'codemirror/theme/midnight.css';
 import 'codemirror/theme/gruvbox-dark.css';
 import 'codemirror/theme/solarized.css';
@@ -13,8 +10,6 @@ import 'codemirror/theme/nord.css';
 import './SpielEditor.css';
 
 const SpielEditor = (props) => {
-
-    let [editor, setEditor] = React.useState();
 
     function updateCode(value: string) {
         props.updateCode(value);
