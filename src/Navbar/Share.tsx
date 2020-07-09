@@ -39,8 +39,8 @@ class Share extends React.Component<ShareProps> {
       <Form.Control id="preludeShare" className="hidden" ref={this.codeShareRef} type="url" value={baseURL + "?p=" + this.props.shareLink + "&s=1"}/>
       <Form.Control id="preludeShare" className="hidden" ref={this.bothShareRef} type="url" value={baseURL + "?p=" + this.props.shareLink + "&s=2"}/>
 
-      <Form.Control id="shareLinkButton" type="button" onClick={() => this.copyToClipboard(this.preludeShareRef)} value="P" title="Share Prelude Only"/>
-      <Form.Control id="shareLinkButton" type="button" onClick={() => this.copyToClipboard(this.codeShareRef)} value="C" title="Share Code Only"/>
+      <Form.Control id="shareLinkButton" className="right-padd" type="button" onClick={() => this.copyToClipboard(this.preludeShareRef)} value="P" title="Share Prelude Only"/>
+      <Form.Control id="shareLinkButton" className="right-padd" type="button" onClick={() => this.copyToClipboard(this.codeShareRef)} value="C" title="Share Code Only"/>
       <Form.Control id="shareLinkButton" type="button" onClick={() => this.copyToClipboard(this.bothShareRef)} value="P & C" title="Share Both"/>
     </>);
   }

@@ -58,18 +58,21 @@ const App: React.FC = () => {
         SpielServerRequest.load(params.p).then(function(resp) {
           return resp.json();
         }).then(function(result) {
+
+          let shareOption = parseInt(params.s);
+
           // load in prelude & gamefile
           if(result.tag === "SpielLoadResult") {
             // good, now load based on share option
-            if(params.s === 0) {
+            if(shareOption === 0) {
               // prelude only
               updatePreludeContent(result.contents[0]);
 
-            } else if(params.s === 1) {
+            } else if(shareOption === 1) {
               // code only
               updateCodeContent(result.contents[1]);
 
-            } else if(params.s === 2) {
+            } else if(shareOption === 2) {
               // both
               updatePreludeContent(result.contents[0]);
               updateCodeContent(result.contents[1]);

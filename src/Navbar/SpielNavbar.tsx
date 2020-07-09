@@ -11,6 +11,8 @@ import './SpielNavbar.css';
 
 const SpielNavbar = (props) => {
 
+    let [didShare, setDidShare] = React.useState(false);
+
     // Themes available
     const themes: Array<string> = ["default", "midnight", "gruvbox-dark", "solarized", "nord"];
 
@@ -45,7 +47,7 @@ const SpielNavbar = (props) => {
 
 
     function getShareOption() {
-      if(props.getShareLink() !== "") {
+      if(didShare) {
         // share link is ready to display, show it!
         return <Share shareLink={props.getShareLink()}/>;
 
@@ -53,12 +55,17 @@ const SpielNavbar = (props) => {
         // share link has NOT been generated yet
         return <Button variant="outline-light" title="Generates share link for Prelude" type="button" onClick={(e) => props.sharePrelude().then(function(result) {
           if(result[0].tag === "SpielSuccess") {
+            // update that we shared and modify link
+            setDidShare(true);
             props.setShareLink(result[0].contents);
+
           } else {
             alert("Unable to share!");
+
           }
         }).catch(function(err) {
           alert("Failed to share!");
+          
         })}>Share</Button>
       }
 
