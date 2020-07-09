@@ -3,6 +3,10 @@
     top: 0;
 }
 
+.right-padd {
+  margin-right: 4px;
+}
+
 /* Item still on the page, but essentially invisible */
 .hidden {
   width: 0 !important;
