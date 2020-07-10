@@ -132,6 +132,15 @@ const Run = (props) => {
         return res;
     }
 
+    // Used to stop handling input
+    // Used after input has been accepted to full
+    // or 'clear' has been typed
+    function exitInputHandling() {
+      setCommandInput([]);
+      setInputState(false);
+      command = "";
+    }
+
     // Used to parse response from back-end server
     function parse_response(responses: any) {
         let latest: JSON = responses[responses.length-1];
@@ -169,6 +178,11 @@ const Run = (props) => {
             case "SpielRuntimeError": {
               console.log("Runtime error encountered: "+ latest["contents"]);
               res = "Runtime Error: "+latest["contents"];
+              if(inputState === true) {
+                // flush cmd buffer so a retry will work,
+                commandInput = [];
+                res += "\nYou entered an expression of incorrect type. Please enter an expression of the correct type.";
+              }
               return res;
             }
             case "SpielTypeHole": {
@@ -179,6 +193,7 @@ const Run = (props) => {
                 // Else it's a SpielValue
                 if (inputState === true) {
                     switch_mode = "\n[ 🤖 BoGL Says: Done reading input. ]\n";
+                    exitInputHandling();
                     inputState = false;
                 }
                 break;
@@ -224,6 +239,12 @@ const Run = (props) => {
     // function to REPL terminal
     function executeCommand(cmd: string, print: any) {
         let respStatus = 0;
+
+        console.dir(inputState);
+        console.dir((cmd === "" ? command : cmd));
+        console.dir(commandInput);
+
+
         SpielServerRequest.runCode(codeP, code, (cmd === "" ? command : cmd), commandInput)
         .then(function(res) {
           // decode this response
@@ -278,10 +299,7 @@ const Run = (props) => {
 
     // Clear input and state
     function clear() {
-        setCommandInput([]);
-        setInputState(false);
-        command = "";
-        //console.log(command);
+        exitInputHandling();
         return "[ 🤖 BoGL Says: Ok, skipping input. ]";
     }
 
