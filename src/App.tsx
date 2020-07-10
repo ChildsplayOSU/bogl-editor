@@ -49,9 +49,6 @@ const App: React.FC = () => {
       const url = window.location.search;
       let params = queryString.parse(url);
 
-      console.info("shareLoaded: " + shareLoaded);
-      console.info("params.p: " + params.p);
-
       if(params.p && params.s && shareLoaded !== params.p) {
         // code & share option given
         // load up prelude & gamefile code
@@ -100,10 +97,6 @@ const App: React.FC = () => {
           alert("Unable to load specific prelude and gamefile! Using what you last had.");
 
         })
-      } else {
-        // already shared, can skip
-        console.info("Already loaded share, skipping");
-
       }
     }
 
@@ -135,10 +128,8 @@ const App: React.FC = () => {
 
     // Updates on change of code or filename
     useEffect(() => {
-        updateCode(code);
-        updateCodeP(codeP);
-        localStorage.setItem(CODE_KEY, code);
-        localStorage.setItem(PRELUDE_KEY, codeP);
+        updateCodeContent(code);
+        updatePreludeContent(codeP);
         checkToLoad();
         // (complains about CODE_KEY, PRELUDE_KEY, and checkToLoad, which are all present already)
         // eslint-disable-next-line

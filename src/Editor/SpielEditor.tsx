@@ -29,6 +29,11 @@ const SpielEditor = (props) => {
                 options={{
                     lineWrapping: true,
                     tabSize: 3,
+
+                    extraKeys: {Enter: function(cm) {
+                      cm.replaceSelection("\n");
+                    }},
+
                     lineNumbers: true,
                     mode: 'bogl',
                     theme: props.editorTheme,
