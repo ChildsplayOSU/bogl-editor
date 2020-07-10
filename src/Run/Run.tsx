@@ -132,6 +132,15 @@ const Run = (props) => {
         return res;
     }
 
+    // Used to stop handling input
+    // Used after input has been accepted to full
+    // or 'clear' has been typed
+    function exitInputHandling() {
+      setCommandInput([]);
+      setInputState(false);
+      command = "";
+    }
+
     // Used to parse response from back-end server
     function parse_response(responses: any) {
         let latest: JSON = responses[responses.length-1];
@@ -179,6 +188,7 @@ const Run = (props) => {
                 // Else it's a SpielValue
                 if (inputState === true) {
                     switch_mode = "\n[ 🤖 BoGL Says: Done reading input. ]\n";
+                    exitInputHandling();
                     inputState = false;
                 }
                 break;
@@ -278,10 +288,7 @@ const Run = (props) => {
 
     // Clear input and state
     function clear() {
-        setCommandInput([]);
-        setInputState(false);
-        command = "";
-        //console.log(command);
+        exitInputHandling();
         return "[ 🤖 BoGL Says: Ok, skipping input. ]";
     }
 
