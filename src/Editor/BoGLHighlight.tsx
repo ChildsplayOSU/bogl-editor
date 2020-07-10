@@ -17,7 +17,7 @@ function BoGLHighlight() {
   let hexitRE = /[0-9A-Fa-f]/;
   let octitRE = /[0-7]/;
   let idRE = /[a-z_A-Z0-9'\xa1-\uffff]/;
-  let symbolRE = /[-!#$%&*+.\/<=>?@\\^|~:]/;
+  let symbolRE = /[-!#$%&*+./<=>?@\\^|~:]/;
   let specialRE = /[(),;[\]`{}]/;
   let whiteCharRE = /[ \t\v\f]/; // newlines are handled in tokenizer
 
@@ -28,8 +28,8 @@ function BoGLHighlight() {
 
     let ch = source.next();
     if (specialRE.test(ch)) {
-      if (ch == '{' && source.eat('-')) {
-        var t = "comment";
+      if (ch === '{' && source.eat('-')) {
+        let t = "comment";
         if (source.eat('#')) {
           t = "meta";
         }
@@ -38,7 +38,7 @@ function BoGLHighlight() {
       return null;
     }
 
-    if (ch == '\'') {
+    if (ch === '\'') {
       if (source.eat('\\')) {
         source.next();  // should handle other escapes here
       }
@@ -51,7 +51,7 @@ function BoGLHighlight() {
       return "string error";
     }
 
-    if (ch == '"') {
+    if (ch === '"') {
       return switchState(source, setState, stringLiteral);
     }
 
@@ -69,7 +69,7 @@ function BoGLHighlight() {
     }
 
     if (digitRE.test(ch)) {
-      if (ch == '0') {
+      if (ch === '0') {
         if (source.eat(/[xX]/)) {
           source.eatWhile(hexitRE); // should require at least 1
           return "integer";
@@ -80,7 +80,7 @@ function BoGLHighlight() {
         }
       }
       source.eatWhile(digitRE);
-      var t = "number";
+      let t = "number";
       if (source.match(/^\.\d+/)) {
         t = "number";
       }
@@ -92,19 +92,19 @@ function BoGLHighlight() {
       return t;
     }
 
-    if (ch == "." && source.eat("."))
+    if (ch === "." && source.eat("."))
       return "keyword";
 
     if (symbolRE.test(ch)) {
-      if (ch == '-' && source.eat(/-/)) {
+      if (ch === '-' && source.eat(/-/)) {
         source.eatWhile(/-/);
         if (!source.eat(symbolRE)) {
           source.skipToEnd();
           return "comment";
         }
       }
-      var t = "variable";
-      if (ch == ':') {
+      let t = "variable";
+      if (ch === ':') {
         t = "variable-2";
       }
       source.eatWhile(symbolRE);
@@ -115,19 +115,19 @@ function BoGLHighlight() {
   }
 
   function ncomment(type, nest) {
-    if (nest == 0) {
+    if (nest === 0) {
       return normal;
     }
     return function(source, setState) {
       var currNest = nest;
       while (!source.eol()) {
         var ch = source.next();
-        if (ch == '{' && source.eat('-')) {
+        if (ch === '{' && source.eat('-')) {
           ++currNest;
         }
-        else if (ch == '-' && source.eat('}')) {
+        else if (ch === '-' && source.eat('}')) {
           --currNest;
-          if (currNest == 0) {
+          if (currNest === 0) {
             setState(normal);
             return type;
           }
@@ -141,11 +141,11 @@ function BoGLHighlight() {
   function stringLiteral(source, setState) {
     while (!source.eol()) {
       var ch = source.next();
-      if (ch == '"') {
+      if (ch === '"') {
         setState(normal);
         return "string";
       }
-      if (ch == '\\') {
+      if (ch === '\\') {
         if (source.eol() || source.eat(whiteCharRE)) {
           setState(stringGap);
           return "string";
@@ -186,7 +186,7 @@ function BoGLHighlight() {
 
     // keyword sequences
     setType("keyword",
-      ["\.\.", ":", "\\", "<-", "->", "!", "="]);
+      ["..", ":", "\\", "<-", "->", "!", "="]);
 
     // highlight operators (same as types)
     setType("builtin",
