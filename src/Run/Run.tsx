@@ -305,9 +305,9 @@ const Run = (props) => {
 
     return (
         <Terminal
-            color='white'
-            backgroundColor='black'
-            barColor='black'
+            color='#606c71'
+            backgroundColor='#f8f8f8'
+            barColor='#f8f8f8'
             style={{ fontSize: "1.1em" }}
             showActions={false}
             commands={{
