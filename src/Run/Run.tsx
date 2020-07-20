@@ -200,6 +200,7 @@ const Run = (props) => {
             }
         }
 
+
         // Parse response type
         switch (latest["contents"][1]["type"]) {
             case "Board": {
@@ -214,6 +215,13 @@ const Run = (props) => {
                 res = latest["contents"][1]["value"];
                 break;
             }
+        }
+
+        // uppercase Javascript boolean values to match True/False in BoGL
+        if(typeof res === "boolean" && res) {
+          res = "True";
+        } else if (typeof res === "boolean" && !res) {
+          res = "False";
         }
 
         latest["contents"][0].forEach(b => extendBoardsString(b, res, boards));
@@ -239,11 +247,6 @@ const Run = (props) => {
     // function to REPL terminal
     function executeCommand(cmd: string, print: any) {
         let respStatus = 0;
-
-        console.dir(inputState);
-        console.dir((cmd === "" ? command : cmd));
-        console.dir(commandInput);
-
 
         SpielServerRequest.runCode(codeP, code, (cmd === "" ? command : cmd), commandInput)
         .then(function(res) {
