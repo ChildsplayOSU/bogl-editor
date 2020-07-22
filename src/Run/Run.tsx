@@ -88,7 +88,10 @@ let command = "";
 const Run = (props) => {
 
     let [commandInput, setCommandInput] = useState(Array<any>());
+    // used to track whether we are actively reading input to complete an expression or not
     let [inputState, setInputState] = useState(false);
+    // used to track whether or not ':t ' was used to request printing of the type as well as the output
+    let [reportType, setReportType] = useState(false);
 
     code = props.code;
     codeP = props.codeP;
@@ -224,6 +227,18 @@ const Run = (props) => {
           res = "False";
         }
 
+
+        if(reportType) {
+          // report this type, if marked with ':t ' from the cmd line
+          res += " : " + latest["contents"][1]["type"];
+
+          // clear reporting
+          setReportType(false);
+          reportType = false;
+          
+        }
+
+
         latest["contents"][0].forEach(b => extendBoardsString(b, res, boards));
         return boards + res + switch_mode;
     }
@@ -247,6 +262,22 @@ const Run = (props) => {
     // function to REPL terminal
     function executeCommand(cmd: string, print: any) {
         let respStatus = 0;
+
+        // check to ':t ' to request an expression result type
+        let regex = /^:t\s+/;
+        if(cmd.match(regex)) {
+          // pull off the prefaced type instruction, but note that we would like to report a type once done
+          console.info("Replacing!!!");
+          cmd = cmd.replace(regex,'');
+          setReportType(true);
+          reportType = true;
+
+        } else {
+          // do not report type
+          setReportType(false);
+          reportType = false;
+
+        }
 
         SpielServerRequest.runCode(codeP, code, (cmd === "" ? command : cmd), commandInput)
         .then(function(res) {
