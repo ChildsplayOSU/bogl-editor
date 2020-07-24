@@ -334,7 +334,7 @@ const Run = (props) => {
     // Clear input and state
     function clear() {
         exitInputHandling();
-        return "[ 🤖 BoGL Says: Ok, skipping input. ]";
+        return " 🤖 BoGL Says: Ok, skipping input. ";
     }
 
     return (
