@@ -150,8 +150,6 @@ const Run = (props) => {
         let res: string = "";
         let switch_mode: string = "";
         let boards: string = "";
-        //console.log(responses);
-        //console.log(latest);
 
         // Check if inputState switched
         switch (latest["tag"]) {
@@ -267,7 +265,6 @@ const Run = (props) => {
         let regex = /^:t\s+/;
         if(cmd.match(regex)) {
           // pull off the prefaced type instruction, but note that we would like to report a type once done
-          console.info("Replacing!!!");
           cmd = cmd.replace(regex,'');
           setReportType(true);
           reportType = true;
@@ -282,7 +279,6 @@ const Run = (props) => {
         SpielServerRequest.runCode(codeP, code, (cmd === "" ? command : cmd), commandInput)
         .then(function(res) {
           // decode this response
-          //console.dir(res);
           respStatus = res.status;
           return res.json();
 

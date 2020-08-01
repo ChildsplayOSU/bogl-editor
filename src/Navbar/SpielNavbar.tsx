@@ -6,12 +6,16 @@ import { Link } from "react-router-dom";
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Share from './Share';
+import queryString from 'query-string';
 
 import './SpielNavbar.css';
 
 const SpielNavbar = (props) => {
 
     let [didShare, setDidShare] = React.useState(false);
+    // keeps track of the last code & prelude for sharing purposes
+    let [code, setCode] = React.useState(false);
+    let [prelude, setPrelude] = React.useState(false);
 
     // Themes available
     const themes: Array<string> = ["default", "midnight", "gruvbox-dark", "solarized", "nord"];
@@ -47,27 +51,60 @@ const SpielNavbar = (props) => {
 
 
     function getShareOption() {
-      if(didShare) {
-        // share link is ready to display, show it!
-        return <Share shareLink={props.getShareLink()}/>;
 
-      } else {
-        // share link has NOT been generated yet
-        return <Button variant="outline-light" title="Generates share link for Prelude" type="button" onClick={(e) => props.sharePrelude().then(function(result) {
-          if(result[0].tag === "SpielSuccess") {
-            // update that we shared and modify link
-            setDidShare(true);
-            props.setShareLink(result[0].contents);
+      // verify changes haven't been made
+      if(props.madeChanges) {
+        // share is out of date, need to reshare the new code
+        didShare = false;
 
-          } else {
-            alert("Unable to share!");
-
-          }
-        }).catch(function(err) {
-          alert("Failed to share!");
-          
-        })}>Share</Button>
       }
+
+      let items: Array<JSX.Element> = [];
+
+      if(didShare) {
+        // show share link for convenience
+        //return <Share shareLink={props.getShareLink()}/>;
+        items.push(<Share shareLink={props.getShareLink()}/>);
+
+      }
+
+      // parse out the params from the url
+      const url = window.location.search;
+      let params = queryString.parse(url);
+
+      // reset button (if viewing shared file)
+      if(params.p && params.s) {
+        // viewing a shared file, show a 'Reset button for it'
+        items.push(<Button variant="outline-light" title="Reset your BoGL program to what was shared" type="button" onClick={(e) => props.reset()} className="right-padd">Reset</Button>);
+
+      }
+
+      // share button
+      items.push(<Button variant="outline-light" title="Share your BoGL program" type="button" onClick={(e) => props.sharePrelude().then(function(result) {
+        if(result[0].tag === "SpielSuccess") {
+          // update that we shared
+          setDidShare(true);
+
+          // indicate we have not made changes since our last share
+          // when code or prelude is updated, App.tsx will mark that changes have been made,
+          // and this will invalidate the share link (as it will be outdated, and should be regenerated)
+          props.setMadeChanges(false);
+
+          // update with the new link
+          props.setShareLink(result[0].contents);
+          // the copy will be implicitly done by the above item ^^ (Share.tsx)
+
+        } else {
+          alert("Unable to share!");
+
+        }
+
+      }).catch(function(err) {
+        alert("Failed to share!");
+
+      })}>Share</Button>);
+
+      return items;
 
     }
 
