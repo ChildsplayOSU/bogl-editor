@@ -228,7 +228,7 @@ const Run = (props) => {
 
         if(reportType) {
           // report this type, if marked with ':t ' from the cmd line
-          res += " : " + latest["contents"][1]["type"];
+          res += " is a kind of " + latest["contents"][1]["type"];
 
           // clear reporting
           setReportType(false);
