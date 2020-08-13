@@ -228,7 +228,21 @@ const Run = (props) => {
 
         if(reportType) {
           // report this type, if marked with ':t ' from the cmd line
-          res += " is a kind of " + latest["contents"][1]["type"];
+          let typ = latest["contents"][1]["type"];
+          // get first letter in lowercase
+          let fl = typ[0].toLowerCase();
+          res += " is";
+          
+          if(fl === 'a' || fl === 'e' || fl === 'i' || fl === 'o' || fl === 'u') {
+            // vowel sub y, use 'an'
+            res += " an ";
+
+          } else {
+            // consonant
+            res += " a ";
+
+          }
+          res += typ;
 
           // clear reporting
           setReportType(false);
