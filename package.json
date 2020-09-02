@@ -13,7 +13,6 @@
     "@types/react": "^16.9.17",
     "@types/react-dom": "^16.9.4",
     "bootstrap": "^4.4.1",
-    "forever": "^2.0.0",
     "history": "^4.10.1",
     "http-proxy": "^1.18.1",
     "http-proxy-middleware": "^1.0.4",
@@ -59,7 +58,6 @@
   },
   "devDependencies": {
     "electron": "^8.1.1",
-    "electron-builder": "^22.4.1",
     "typescript": "^3.8.3",
     "webpack-cli": "^3.3.12"
   },
