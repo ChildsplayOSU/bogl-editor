@@ -1,6 +1,6 @@
 {
   "name": "spiel-front",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "homepage": "./",
   "private": true,
   "dependencies": {
