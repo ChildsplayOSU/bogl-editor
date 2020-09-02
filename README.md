@@ -1,24 +1,16 @@
 # Spiel-Front
 
-The front-end for the Spiel implementation of the BoGL language. The back end and interpreter for the language are accessible [here](https://github.com/The-Code-In-Sheep-s-Clothing/Spiel-Lang).
+This is the front-end for the Spiel implementation of BoGL (the Board Game Language). The front-end is an interactive HTML5 web application with a syntax editor and a REPL interface. BoGL code is written into the syntax editor, expressions are typed into the REPL, and the code & expression under evaluation are sent to the stateless back-end to produce a result.
 
-Please visit our [informational website](https://the-code-in-sheep-s-clothing.github.io/Spiel-Lang/) to learn more about what the project is and how you can access it without building from source. If you are detemined to build it from source, read the instructions below.
+If you're looking for the stateless back-end, including the interpreter for BoGL (syntax, typechecker, evaluator), then you can find the repository for that project [here](https://github.com/The-Code-In-Sheep-s-Clothing/Spiel-Lang).
+
+You can also visit our [informational website](https://the-code-in-sheep-s-clothing.github.io/Spiel-Lang/) to learn more about what this project is and how you can access it.
 
 Libraries used:
 * [react-bootstrap](https://react-bootstrap.github.io/)
 * [CodeMirror](https://codemirror.net/)
 * [react-router](https://github.com/ReactTraining/react-router)
 * [terminal-in-react](https://github.com/nitin42/terminal-in-react)
-
-## Installation Video
-~You can watch [this video](https://media.oregonstate.edu/media/0_hxrt5f8y) for a quick tutorial on installing and running Spiel.~ We have since migrated this tool to an online hosted instance at http://bogl.engr.oregonstate.edu:5158, and there is no longer a need to install the tool for general usage.
-
-<!-- Removed...
-## Installation from Existing Package
-- We have a preconfigured macOS package suitable for testing purposes, you can download [our beta release here](https://github.com/The-Code-In-Sheep-s-Clothing/Spiel-Front/releases/download/beta3/spiel-front-0.1.0.dmg). Note, because it is unsigned you will need to open it via Cmd + Right Click, and select open from the options. If you don't macOS will complain about it being an not a legitimate mac app.
-- A linux package is available, but not yet uploaded.
-- For Windows you will have to build from source.
--->
 
 ## Setting up a Development Environment
 - Install [Stack](https://docs.haskellstack.org/en/stable/README/), which is required for building the language and backend itself.
