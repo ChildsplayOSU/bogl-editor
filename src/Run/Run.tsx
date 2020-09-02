@@ -119,7 +119,7 @@ const Run = (props) => {
                 res += ",";
             }
             if (tuple[i]["type"] === "Tuple") {
-                res += "(" + get_tuple(tuple[i]["value"]) + ")";
+                res += get_tuple(tuple[i]["value"]);
             }
             else if (tuple[i]["type"] === "Board") {
                 res += "\n\n";
