@@ -74,7 +74,8 @@ class SpielServerRequest {
                 prelude: prelude_code,
                 file: code,
                 input: command,
-                buffer: buf
+                buffer: buf,
+                programName: "Program" // <-- program name goes here
             }),
         })
     }
@@ -232,7 +233,7 @@ const Run = (props) => {
           // get first letter in lowercase
           let fl = typ[0].toLowerCase();
           res += " is";
-          
+
           if(fl === 'a' || fl === 'e' || fl === 'i' || fl === 'o' || fl === 'u') {
             // vowel sub y, use 'an'
             res += " an ";
