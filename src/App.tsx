@@ -166,8 +166,8 @@ const App: React.FC = () => {
                     <Col className="move-down tall" sm={8}>
 			<Route className="CodeMirror" exact path="/" render={(props) =>
                             <>
-                                <Tabs defaultActiveKey="Code" transition={false} id="uncontrolled-tab-example" onSelect={(k) => go(k)}>
-                                    <Tab eventKey="Code" title="Code"></Tab>
+                                <Tabs defaultActiveKey="Program" transition={false} id="uncontrolled-tab-example" onSelect={(k) => go(k)}>
+                                    <Tab eventKey="Program" title="Program"></Tab>
                                     <Tab eventKey="Prelude" title="Prelude"></Tab>
                                 </Tabs>
                                 <SpielEditor {...props} code={(P ? codeP : code)} editorTheme={editorTheme} updateCode={(P ? updateCodeP : updateCode)}/>

@@ -120,14 +120,20 @@ const SpielNavbar = (props) => {
         {getBoGLExamples()}
     </NavDropdown>
     */
+
+    /*
+    Old 'Editor' link, redundant, went right before 'Themes' below
+    <Nav.Link as={Link} to="/">Editor</Nav.Link>
+    */
+
     return (
         <Navbar bg="danger" variant="dark" expand="lg" fixed="top">
-            <Navbar.Brand>BoGL: Board Game Language</Navbar.Brand>
+            <Navbar.Brand><img src="favicon.ico" className="icon" width="26" height="26"/> BoGL: Board Game Language</Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="mr-auto">
-                    <Nav.Link as={Link} to="/">Editor</Nav.Link>
-                    <NavDropdown title="Themes" id="basic-nav-dropdown">
+
+                    <NavDropdown title="Themes" id="basic-nav-dropdown" className="align-navlink">
                         {getThemes()}
                     </NavDropdown>
 
