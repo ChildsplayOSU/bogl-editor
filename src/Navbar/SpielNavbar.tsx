@@ -2,7 +2,6 @@ import * as React from 'react';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown';
-import { Link } from "react-router-dom";
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Share from './Share';
@@ -14,8 +13,8 @@ const SpielNavbar = (props) => {
 
     let [didShare, setDidShare] = React.useState(false);
     // keeps track of the last code & prelude for sharing purposes
-    let [code, setCode] = React.useState(false);
-    let [prelude, setPrelude] = React.useState(false);
+    //let [code, setCode] = React.useState(false);
+    //let [prelude, setPrelude] = React.useState(false);
 
     // Themes available
     const themes: Array<string> = ["default", "midnight", "gruvbox-dark", "solarized", "nord"];
@@ -30,18 +29,20 @@ const SpielNavbar = (props) => {
     }
 
     // examples available
+    /*
     let boglExamples: Array<Array<string>> = [
-      /* TODO BOGL Examples need to be updated
+      // TODO BOGL Examples need to be updated
       ["Simplest Program","-- Simple Program example\ngame Simple"],
       ["Function", "--example of a function\ngame FunctionExample\ntype Board = Array(1,1) of Int\ntype Input = Int\n\nf : Int\nf = 1"],
       ["Function with Parameter", "--example of a function that takes a parameter\ngame FunctionParamExample\ntype Board = Array(1,1) of Int\ntype Input = Int\n\n--adds 1 to whatever number we give this function\nf : Int -> Int\nf(x) = x + 1"],
       ["Board","--example of a simple board\ngame BoardExample\ntype Board = Array(3,3) of Int\ntype Input = Int\n\n--a board called 'ex' where every space is 0\nex : Board\nex!(x,y) = 0"],
       ["Simple Input","--example of taking in simple input\ngame SimpleInput\ntype Board = Array(1,1) of Int\ntype Input = Int\n\n--a function that adds 2 numbers together\nadd : Int -> Int\nadd(x) = let y = input in x + y"],
       ["Place a Piece","--example of placing a piece on a board\ngame PlacePiece\n\ntype Board = Array(3,3) of Int\ntype\nPosition = (Int,Int)\ntype Input = Position\n\n--a new board of 0's\nb : Board\nb!(x,y) = 0\n\n-- a function to place a piece on this board\nplacePiece : Board -> Board\nplacePiece(board) = let pos = input in place(1,board,pos)"]
-      */
     ];
+    */
 
     // Generate example list to be used in drop down
+    /*
     function getBoGLExamples() {
         let navitems: Array<JSX.Element> = [];
         for(let i = 0; i < boglExamples.length; i++) {
@@ -50,6 +51,7 @@ const SpielNavbar = (props) => {
         }
         return navitems;
     }
+    */
 
 
     function getShareOption() {
@@ -128,7 +130,7 @@ const SpielNavbar = (props) => {
 
     return (
         <Navbar bg="danger" variant="dark" expand="lg" fixed="top">
-            <Navbar.Brand><img src="favicon.ico" className="icon" width="26" height="26"/> BoGL: Board Game Language</Navbar.Brand>
+            <Navbar.Brand><img src="favicon.ico" className="icon" width="26" height="26" alt="BoGL Logo"/> BoGL: Board Game Language</Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="mr-auto">
