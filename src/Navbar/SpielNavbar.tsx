@@ -12,7 +12,9 @@ import './SpielNavbar.css';
 const SpielNavbar = (props) => {
 
     let [didShare, setDidShare] = React.useState(false);
-    // keeps track of the last code & prelude for sharing purposes
+
+    // TODO can be removed if examples don't come back (has no impact on sharing), these are vestiges, are are used in the former examples category
+    // keeps track of the last code & prelude
     //let [code, setCode] = React.useState(false);
     //let [prelude, setPrelude] = React.useState(false);
 
@@ -28,6 +30,7 @@ const SpielNavbar = (props) => {
         return navitems;
     }
 
+    // TODO can be removed if examples don't come back
     // examples available
     /*
     let boglExamples: Array<Array<string>> = [
@@ -41,6 +44,7 @@ const SpielNavbar = (props) => {
     ];
     */
 
+    // TODO can be removed if examples don't come back
     // Generate example list to be used in drop down
     /*
     function getBoGLExamples() {
@@ -114,6 +118,7 @@ const SpielNavbar = (props) => {
 
     // Uses React-Router to change page
 
+    // TODO can be removed if examples don't come back
     // TODO after the 'Themes' dropdown, this can be added
     // when the examples are ready.
     // ALSO needs to uncomment the updated examples afterwards
@@ -123,6 +128,7 @@ const SpielNavbar = (props) => {
     </NavDropdown>
     */
 
+    // TODO can be removed if examples don't come back
     /*
     Old 'Editor' link, redundant, went right before 'Themes' below
     <Nav.Link as={Link} to="/">Editor</Nav.Link>
