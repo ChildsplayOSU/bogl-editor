@@ -1,5 +1,7 @@
 # Spiel-Front
 
+[![Build Status](https://travis-ci.com/The-Code-In-Sheep-s-Clothing/Spiel-Front.svg?branch=master)](https://travis-ci.com/The-Code-In-Sheep-s-Clothing/Spiel-Front)
+
 This is the front-end for the Spiel implementation of BoGL (the Board Game Language). The front-end is an interactive HTML5 web application with a syntax editor and a REPL interface. BoGL code is written into the syntax editor, expressions are typed into the REPL, and the code & expression under evaluation are sent to the stateless back-end to produce a result.
 
 If you're looking for the stateless back-end, including the interpreter for BoGL (syntax, typechecker, evaluator), then you can find the repository for that project [here](https://github.com/The-Code-In-Sheep-s-Clothing/Spiel-Lang).
