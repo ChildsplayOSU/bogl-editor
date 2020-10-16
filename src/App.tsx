@@ -55,7 +55,7 @@ const App: React.FC = () => {
       const url = window.location.search;
       let params = queryString.parse(url);
 
-      SpielServerRequest.load(params.p).then(function(resp) {
+      SpielServerRequest.load(fetch, params.p).then(function(resp) {
         return resp.json();
       }).then(function(result) {
 
@@ -126,7 +126,7 @@ const App: React.FC = () => {
     // returns a string to share
     function sharePrelude() {
       // request to share prelude & gamefile, will return a unique filename on success, otherwise failure
-      return SpielServerRequest.share(codeP, code).then(function(resp) {
+      return SpielServerRequest.share(fetch, codeP, code).then(function(resp) {
         return resp.json();
       });
     }

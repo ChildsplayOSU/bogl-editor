@@ -11,14 +11,14 @@ class SpielServerRequest {
 
 
     // Access the test endpoint, checks if the server is online
-    static test() {
-      return fetch(SpielServerRequest.SPIEL_API+'/test', {method: 'GET'});
+    static test(request) {
+      return request(SpielServerRequest.SPIEL_API+'/test', {method: 'GET'});
     }
 
 
     // Saves contents to a given filename
-    static share(preludeContent, gamefileContent) {
-      return fetch(SpielServerRequest.SPIEL_API+'/share', {
+    static share(request, preludeContent, gamefileContent) {
+      return request(SpielServerRequest.SPIEL_API+'/share', {
           method: 'POST',
           headers: {
               'Accept': 'application/json',
@@ -33,8 +33,8 @@ class SpielServerRequest {
 
 
     // Used to load up both a prelude & gamefile simultaneously
-    static load(id) {
-      return fetch(SpielServerRequest.SPIEL_API+'/load', {
+    static load(request,id) {
+      return request(SpielServerRequest.SPIEL_API+'/load', {
           method: 'POST',
           headers: {
               'Accept': 'application/json',
@@ -48,8 +48,8 @@ class SpielServerRequest {
 
 
     // Reads a file by the given name
-    static read(filename) {
-      return fetch(SpielServerRequest.SPIEL_API+'/read', {
+    static read(request,filename) {
+      return request(SpielServerRequest.SPIEL_API+'/read', {
           method: 'POST',
           headers: {
               'Accept': 'application/json',
@@ -63,8 +63,8 @@ class SpielServerRequest {
 
 
     // Runs a command on a given prelude and gamefile contents, with input as well
-    static runCode(prelude_code, code, command, buf) {
-        return fetch(SpielServerRequest.SPIEL_API+'/runCode', {
+    static runCode(request,prelude_code, code, command, buf) {
+        return request(SpielServerRequest.SPIEL_API+'/runCode', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -291,7 +291,7 @@ const Run = (props) => {
 
         }
 
-        SpielServerRequest.runCode(codeP, code, (cmd === "" ? command : cmd), commandInput)
+        SpielServerRequest.runCode(fetch, codeP, code, (cmd === "" ? command : cmd), commandInput)
         .then(function(res) {
           // decode this response
           respStatus = res.status;

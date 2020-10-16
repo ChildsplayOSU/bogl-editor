@@ -34,7 +34,7 @@
     "startProduction": "(react-scripts start &>/dev/null &) && spielserver 5174",
     "stopProduction": "react-scripts stop",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "npm run build && react-scripts test",
     "eject": "react-scripts eject",
     "electron-start": "electron .",
     "build-electron": "mkdir build/src && mkdir build/resources && cp -r electron/. build/electron && cp -r resources/* build/resources/",
