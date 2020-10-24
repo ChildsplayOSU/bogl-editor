@@ -5,7 +5,11 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Share from './Share';
+import Download from './Download';
 import queryString from 'query-string';
+import { Icon } from 'react-icons-kit'
+import {shareAlt} from 'react-icons-kit/fa/shareAlt'
+import {undo} from 'react-icons-kit/fa/undo'
 
 import './SpielNavbar.css';
 
@@ -76,6 +80,11 @@ const SpielNavbar = (props) => {
 
       }
 
+      let fileName = props.downloadAsProgram ? "Program.bgl" : "Prelude.bgl";
+      let content = props.downloadAsProgram ? props.lastCode : props.lastPrelude;
+
+      items.push(<Download content={content} link={fileName}/>);
+
       // parse out the params from the url
       const url = window.location.search;
       let params = queryString.parse(url);
@@ -83,7 +92,7 @@ const SpielNavbar = (props) => {
       // reset button (if viewing shared file)
       if(params.p && params.s) {
         // viewing a shared file, show a 'Reset button for it'
-        items.push(<Button key="resetButton" variant="outline-light" title="Reset your BoGL program to what was shared" type="button" onClick={(e) => props.reset()} className="right-padd">Reset</Button>);
+        items.push(<Button key="resetButton" variant="outline-light" title="Reset your BoGL program to what was shared" type="button" onClick={(e) => props.reset()} className="right-padd"><Icon icon={undo}/></Button>);
 
       }
 
@@ -110,7 +119,7 @@ const SpielNavbar = (props) => {
       }).catch(function(err) {
         alert("Failed to share!");
 
-      })}>Share</Button>);
+      })}><Icon icon={shareAlt}/></Button>);
 
       return items;
 

@@ -161,7 +161,7 @@ const App: React.FC = () => {
     return (
         <>
             <Router>
-                <SpielNavbar setTheme={setTheme} setCode={setCode} lastCode={code} madeChanges={madeChanges} setMadeChanges={setMadeChanges} lastPrelude={codeP} sharePrelude={sharePrelude} setShareLink={setShareLink} getShareLink={getShareLink} reset={performLoad}/>
+                <SpielNavbar downloadAsProgram={!P} setTheme={setTheme} setCode={setCode} lastCode={code} madeChanges={madeChanges} setMadeChanges={setMadeChanges} lastPrelude={codeP} sharePrelude={sharePrelude} setShareLink={setShareLink} getShareLink={getShareLink} reset={performLoad}/>
                 <Row noGutters={true}>
                     <Col className="move-down tall" sm={8}>
 			<Route className="CodeMirror" exact path="/" render={(props) =>
