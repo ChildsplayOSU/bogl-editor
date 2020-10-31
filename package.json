@@ -36,11 +36,7 @@
     "stopProduction": "react-scripts stop",
     "build": "react-scripts build",
     "test": "npm run build && react-scripts test",
-    "eject": "react-scripts eject",
-    "electron-start": "electron .",
-    "build-electron": "mkdir build/src && mkdir build/resources && cp -r electron/. build/electron && cp -r resources/* build/resources/",
-    "package": "electron-builder build --mac --win -c.extraMetadata.main=build/electron/main.js --publish never",
-    "package-mac": "electron-builder build --mac -c.extraMetadata.main=build/electron/main.js --publish never"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -58,7 +54,6 @@
     ]
   },
   "devDependencies": {
-    "electron": "^8.1.1",
     "typescript": "^3.8.3",
     "webpack-cli": "^3.3.12"
   },

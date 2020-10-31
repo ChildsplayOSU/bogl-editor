@@ -310,7 +310,7 @@ const Run = (props) => {
           } else if((error instanceof SyntaxError || (error.name && error.name === "SyntaxError"))) {
             // bad parse error
             //console.dir(error);
-            print(" 🤖 BoGL Says: Your program was unable to be understood. Please double check it and try again! ");
+            print(" 🤖 BoGL Says: I couldn't understand your program. Please double check it and try again! ");
 
           } else if((error instanceof TypeError || (error.name && error.name === "TypeError")) && respStatus === 0) {
             // likely JS disabled
