@@ -19,8 +19,8 @@ const SpielNavbar = (props) => {
 
     // TODO can be removed if examples don't come back (has no impact on sharing), these are vestiges, are are used in the former examples category
     // keeps track of the last code & prelude
-    //let [code, setCode] = React.useState(false);
-    //let [prelude, setPrelude] = React.useState(false);
+    //let [programCode, setProgramCode] = React.useState(false);
+    //let [preludeCode, setPreludeCode] = React.useState(false);
 
     // Themes available
     const themes: Array<string> = ["default", "midnight", "gruvbox-dark", "solarized", "nord"];
@@ -55,7 +55,7 @@ const SpielNavbar = (props) => {
         let navitems: Array<JSX.Element> = [];
         for(let i = 0; i < boglExamples.length; i++) {
           // TODO set this up so that the updatd examples populate back to the other router
-          navitems.push(<NavDropdown.Item key={"boglexample-" + i.toString()} onClick={() => props.setCode(boglExamples[i][1]) }>{ boglExamples[i][0] }</NavDropdown.Item>);
+          navitems.push(<NavDropdown.Item key={"boglexample-" + i.toString()} onClick={() => props.setProrgramCode(boglExamples[i][1]) }>{ boglExamples[i][0] }</NavDropdown.Item>);
         }
         return navitems;
     }
@@ -83,7 +83,7 @@ const SpielNavbar = (props) => {
       let fileName = props.downloadAsProgram ? "Program.bgl" : "Prelude.bgl";
       let content = props.downloadAsProgram ? props.lastCode : props.lastPrelude;
 
-      items.push(<Download content={content} link={fileName}/>);
+      items.push(<Download key="downloadLink" content={content} link={fileName}/>);
 
       // parse out the params from the url
       const url = window.location.search;

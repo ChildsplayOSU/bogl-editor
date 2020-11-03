@@ -5,7 +5,8 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 
 import SpielEditor from './Editor/SpielEditor';
 import SpielNavbar from './Navbar/SpielNavbar';
-import { Run, SpielServerRequest } from './Run/Run';
+import { Repl } from './Repl/Repl';
+import { apiRequestShare, apiRequestLoad } from './Utilities/BoGLServerRequest';
 
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -15,19 +16,21 @@ import Tab from 'react-bootstrap/Tab';
 const App: React.FC = () => {
 
     // Keys for local storage
-    let THEME_KEY = "THEME_KEY";
-    let CODE_KEY = "CODE_KEY";
+    let THEME_KEY   = "THEME_KEY";
+    let CODE_KEY    = "CODE_KEY";
     let PRELUDE_KEY = "PRELUDE_KEY";
-    let SHARE_KEY = "SHARE_KEY";
+    let SHARE_KEY   = "SHARE_KEY";
 
     // State functions
     let [editorTheme, setEditorTheme] = React.useState(localStorage.getItem(THEME_KEY) || "default");
-    let [code, setCode] = React.useState(localStorage.getItem(CODE_KEY) || "");
-    let [codeP, setCodeP] = React.useState(localStorage.getItem(PRELUDE_KEY) || "");
+    let [programCode, setProgramCode] = React.useState(localStorage.getItem(CODE_KEY) || "");
+    let [preludeCode, setPreludeCode] = React.useState(localStorage.getItem(PRELUDE_KEY) || "");
     let [madeChanges, setMadeChanges] = React.useState(false);
     let [shareLoaded, setShareLoaded] = React.useState(localStorage.getItem(SHARE_KEY) || "");
     let [shareLink, setShareLink] = React.useState(false);
-    let [P, setP] = React.useState(false);
+
+    // indicates whether program or prelude is displayed, default is false to display program
+    let [displayPrelude, setDisplayPrelude] = React.useState(false);
 
 
     // update the prelude used in the Editor
@@ -35,17 +38,17 @@ const App: React.FC = () => {
       // mark that changes were made
       setMadeChanges(true);
       // update prelude locally & in state
-      setCodeP(content);
+      setPreludeCode(content);
       localStorage.setItem(PRELUDE_KEY, content);
     }
 
 
-    // update the code used in the Editor
+    // update the programCode used in the Editor
     function updateCodeContent(content: string) {
       // mark that changes were made
       setMadeChanges(true);
       // update code locally & in state
-      setCode(content);
+      setProgramCode(content);
       localStorage.setItem(CODE_KEY, content);
     }
 
@@ -55,7 +58,7 @@ const App: React.FC = () => {
       const url = window.location.search;
       let params = queryString.parse(url);
 
-      SpielServerRequest.load(fetch, params.p).then(function(resp) {
+      apiRequestLoad(fetch, params.p).then(function(resp) {
         return resp.json();
       }).then(function(result) {
 
@@ -69,7 +72,7 @@ const App: React.FC = () => {
             updatePreludeContent(result.contents[0]);
 
           } else if(shareOption === 1) {
-            // code only
+            // program only
             updateCodeContent(result.contents[1]);
 
           } else if(shareOption === 2) {
@@ -126,17 +129,17 @@ const App: React.FC = () => {
     // returns a string to share
     function sharePrelude() {
       // request to share prelude & gamefile, will return a unique filename on success, otherwise failure
-      return SpielServerRequest.share(fetch, codeP, code).then(function(resp) {
+      return apiRequestShare(fetch, preludeCode, programCode).then(function(resp) {
         return resp.json();
       });
     }
 
-    function updateCode(c: string) {
-        setCode(c);
+    function updateCodeProgram(c: string) {
+        setProgramCode(c);
     }
 
-    function updateCodeP(c: string) {
-        setCodeP(c);
+    function updateCodePrelude(c: string) {
+        setPreludeCode(c);
     }
 
     function getShareLink() {
@@ -145,37 +148,37 @@ const App: React.FC = () => {
 
     // Updates on change of code or filename
     useEffect(() => {
-        updateCodeContent(code);
-        updatePreludeContent(codeP);
+        updateCodeContent(programCode);
+        updatePreludeContent(preludeCode);
         checkToLoad();
         // (complains about CODE_KEY, PRELUDE_KEY, and checkToLoad, which are all present already)
         // eslint-disable-next-line
-    }, [code, codeP, P]);
+    }, [programCode, preludeCode, displayPrelude]);
 
-    // Set prelude code or regular code to be displayed
-    function go(k: string) {
-        setP(k === "Prelude");
+    // Set prelude or program to be displayed
+    function toggleTabDisplay(tabKey: string) {
+        setDisplayPrelude(tabKey === "Prelude");
     }
 
-    // Parent to Editor, Tutorial, and Run (terminal)
+    // Parent to Editor and Repl (terminal)
     return (
         <>
             <Router>
-                <SpielNavbar downloadAsProgram={!P} setTheme={setTheme} setCode={setCode} lastCode={code} madeChanges={madeChanges} setMadeChanges={setMadeChanges} lastPrelude={codeP} sharePrelude={sharePrelude} setShareLink={setShareLink} getShareLink={getShareLink} reset={performLoad}/>
+                <SpielNavbar downloadAsProgram={!displayPrelude} setTheme={setTheme} setProgramCode={setProgramCode} lastCode={programCode} madeChanges={madeChanges} setMadeChanges={setMadeChanges} lastPrelude={preludeCode} sharePrelude={sharePrelude} setShareLink={setShareLink} getShareLink={getShareLink} reset={performLoad}/>
                 <Row noGutters={true}>
                     <Col className="move-down tall" sm={8}>
-			<Route className="CodeMirror" exact path="/" render={(props) =>
+			                 <Route className="CodeMirror" exact path="/" render={(props) =>
                             <>
-                                <Tabs defaultActiveKey="Program" transition={false} id="uncontrolled-tab-example" onSelect={(k) => go(k)}>
+                                <Tabs defaultActiveKey="Program" transition={false} id="uncontrolled-tab-example" onSelect={toggleTabDisplay}>
                                     <Tab eventKey="Program" title="Program"></Tab>
                                     <Tab eventKey="Prelude" title="Prelude"></Tab>
                                 </Tabs>
-                                <SpielEditor {...props} code={(P ? codeP : code)} editorTheme={editorTheme} updateCode={(P ? updateCodeP : updateCode)}/>
+                                <SpielEditor {...props} code={(displayPrelude ? preludeCode : programCode)} editorTheme={editorTheme} updateCode={(displayPrelude ? updateCodePrelude : updateCodeProgram)}/>
                             </>
                         } />
                     </Col>
                     <Col className="move-down tall" sm={4}>
-                        <Run code={code} codeP={codeP} />
+                        <Repl programCode={programCode} preludeCode={preludeCode} />
                     </Col>
                 </Row>
             </Router>

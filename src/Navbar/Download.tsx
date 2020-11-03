@@ -10,8 +10,6 @@ interface DownloadProps {
 class Download extends React.Component<DownloadProps> {
 
   render() {
-    console.info("Content: " + this.props.content);
-    console.info("Link: " + this.props.link);
     let data = new Blob([this.props.content], {type: 'text/plain'});
     let url = window.URL.createObjectURL(data);
 
