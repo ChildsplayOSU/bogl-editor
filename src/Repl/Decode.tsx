@@ -6,6 +6,7 @@
  * Holds decoding functionality for responses from the server
  */
 
+import * as Err from './Errors'
 
 /*
  * decodeValue
@@ -13,7 +14,8 @@
  *
  * decoded : Decoded response from the server
  */
-const decodeValue = (decoded) => {
+const decodeValue = (decoded: Array<any>) => {
+
   // parse by the type of the response
   if(decoded["type"] === "Board") {
     // Board
@@ -33,8 +35,8 @@ const decodeValue = (decoded) => {
 
   } else {
     // fallback
-    console.error("Unable to decode value for type " + decoded["type"])
-    return "Unrecognized Value"
+    //console.error("Unable to decode value for type " + decoded["type"])
+    throw ReferenceError("Unrecognized Value of type " + decoded["type"])
 
   }
 }
@@ -78,8 +80,14 @@ const decodeTuple = (tuple: any) => {
  *
  * decoded : Decoded response that contains a bool
  */
-const decodeBool = (decoded) => {
-  return decoded ? "True" : "False";
+const decodeBool = (decoded: boolean) => {
+  if(typeof decoded === "boolean") {
+    return decoded ? "True" : "False";
+
+  } else {
+    throw ReferenceError("Attempted to decode non boolean value of " + decoded);
+
+  }
 }
 
 
@@ -91,7 +99,6 @@ const decodeBool = (decoded) => {
  */
 const decodeExprType = (typ) => {
   // report this type, if marked with ':t ' from the cmd line
-  //let typ = latest["contents"][1]["type"];
   // get first letter in lowercase
   let fl = typ[0].toLowerCase();
   let res = " is";
@@ -117,74 +124,27 @@ const decodeExprType = (typ) => {
  * respStatus : Status code of the response
  */
 const decodeError = (error, respStatus : number) => {
-
-  console.error(error)
-
   if((error instanceof SyntaxError || (error.name && error.name === "SyntaxError")) && respStatus === 504) {
     // gateway timeout
-    return " 🤖 BoGL Says: Unable to finish running your program, or not currently online. Double check your code, or check back later! ";
+    return Err.BoglGateWayTimeoutError;
 
   } else if((error instanceof SyntaxError || (error.name && error.name === "SyntaxError"))) {
     // bad parse error
-    return " 🤖 BoGL Says: I couldn't understand your program. Please double check it and try again! ";
+    return Err.BoglResponseParseError;
 
   } else if((error instanceof TypeError || (error.name && error.name === "TypeError")) && respStatus === 0) {
     // likely JS disabled
-    return " 🤖 BoGL Says: Unable to execute your program. Make sure that Javascript is enabled and try again! ";
+    return Err.BoglNoJSError;
 
   } else if((error instanceof TypeError || (error.name && error.name === "TypeError"))) {
     // something else?
-    return " 🤖 BoGL Says: Unable to execute your program, please double check your code and try again. ";
+    return Err.BoglTypeError;
 
   } else {
     // general error
+    //console.dir(error)
     return " 🤖 BoGL Says: An error occurred: " + error + " ";
 
-  }
-}
-
-
-/*
- * decodeReponse
- * Decodes a response from the BoGL API, returned a decoded object
- *
- * reponses: JSON obj containing the responses returned
- */
-const decodeResponse = (responses: any) => {
-  // get latest response
-  const latestResponse = responses[responses.length - 1]
-
-  const category = latestResponse["tag"]
-  const contents = latestResponse["contents"]
-  let typ = ""
-  if(contents[1] !== undefined && contents[1]["type"] !== undefined) {
-    typ = contents[1]["type"]
-  }
-
-  let value = ""
-  if(contents[1] !== undefined && contents[1]["value"] !== undefined) {
-    value = contents[1]["value"]
-  }
-
-  let boards   = ""
-  if(category === "SpielPrompt") {
-    if(contents[0] !== undefined && contents[0]["value"] !== undefined) {
-      boards = contents.reduce((tot,b) => tot + decodeBoard(b["value"]) + "\n")
-    }
-
-  } else {
-    // just get the first OR the last board right?
-    if(contents[0] !== undefined && contents[0]["value"] !== undefined) {
-      contents[0].foreach(b => boards + decodeBoard(b["value"]) + "\n")
-    }
-  }
-
-  return {
-    "category": category,
-    "contents": contents,
-    "type": typ,
-    "value": value,
-    "boards": boards
   }
 }
 
@@ -195,6 +155,5 @@ export {
   decodeTuple,
   decodeBool,
   decodeExprType,
-  decodeError,
-  decodeResponse
+  decodeError
 }

@@ -9,19 +9,7 @@
 import React, { useState } from 'react';
 import Terminal from 'terminal-in-react';
 import {apiRequestRunCode} from '../Utilities/BoGLServerRequest';
-import {decodeValue,decodeExprType,decodeError,decodeResponse} from './Decode';
-
-
-// an expression like place(1,b,(1,1)) evaluates to a board and it also adds the same board to
-// the print buffer. This makes sure we do not print duplicate boards.
-// an expression could modify two boards to be identical, in that case it may be confusing to
-// only print one board, but that is a much less common use case that the first one.
-/*
-const extendBoardsString = (board, value, boards) => {
-    let boardStr = decodeBoard(board["value"]);
-    if (boardStr !== value) boards = boards + boardStr + value + "\n";
-}
-*/
+import {decodeValue,decodeExprType,decodeError} from './Decode';
 
 
 /*
@@ -87,13 +75,14 @@ const Repl = (props) => {
 
 
   /*
-   * popFromInputBuffer
-   * Pops the last input off the buffer, used when an error has occurred
+   * popFromInputBufferWithMsg
+   * Pops the last input off the buffer, used when an error has occurred, and returns a msg
    */
-  const popFromInputBuffer = () => {
+  const popFromInputBufferWithMsg = () => {
     let cpy = inputBuffer
     cpy.pop()
     setInputBuffer(cpy)
+    return "\nYour last input was discarded. Please enter a new one."
   }
 
 
@@ -104,18 +93,8 @@ const Repl = (props) => {
    * decoded: The decoded response we can use
    */
   const handlePrompt = (replExpression,decoded) => {
-    let res = ""
-    if(inputMode === false) {
-      res += "\n 🤖 BoGL Says: Enter input, or \"clear\" to stop. \n";
-      enterInputMode(replExpression);
-    }
-
-    // only show a decoded board if there is one
-    if(decoded["boards"] && decoded["boards"] !== "") {
-      res = decodeValue(decoded["boards"]) + res
-    }
-
-    return res
+    enterInputMode(replExpression);
+    return "\n 🤖 BoGL Says: Enter input, or \"clear\" to stop. \n";
   }
 
 
@@ -128,8 +107,7 @@ const Repl = (props) => {
   const handleTypeError = (decoded) => {
     let res = decoded["contents"]["message"]
     if(inputMode === true) {
-      popFromInputBuffer();
-      res += "\nYour last input was discarded.";
+      res += popFromInputBufferWithMsg()
     }
     return res
   }
@@ -144,8 +122,7 @@ const Repl = (props) => {
   const handleLanguageError = (decoded) => {
     let res = "Language Error: "+decoded["contents"][3];
     if(inputMode === true) {
-      popFromInputBuffer();
-      res += "\nYour last input was discarded.";
+      res += popFromInputBufferWithMsg()
     }
     return res
   }
@@ -161,8 +138,7 @@ const Repl = (props) => {
     // Runtime Error
     let res = "Runtime Error: "+decoded["contents"];
     if(inputMode === true) {
-      popFromInputBuffer();
-      res += "\nYour last input was discarded.";
+      res += popFromInputBufferWithMsg();
     }
     return res
   }
@@ -184,7 +160,6 @@ const Repl = (props) => {
     // consider where we should report the type of the expression
     if(shouldReportExprType) {
       res += decodeExprType(decoded["type"]);
-      shouldReportExprType = false;
     }
 
     // lastly, report whether we are out of input mode
@@ -200,36 +175,95 @@ const Repl = (props) => {
 
 
   /*
+   * extractContent
+   * Extracts the content for values from the response
+   *
+   * reponses: JSON obj containing the responses returned, types & content
+   */
+  const extractContent = (response: any) => {
+    // get content part of the response, ignoring the type part 1st
+    const contentPart = response[response.length - 1]
+
+    // get category of response
+    const category = contentPart["tag"]
+
+    // get contents of response
+    const contents = contentPart["contents"]
+
+    // extract all boards from place operations
+    // have to check, prompts do not define this, and we must substitute
+    let boards = contents[0] !== undefined ? contents[0] : []
+
+    if(category === "SpielPrompt") {
+      // boards are contained within the contents directly for prompts, but only in this case
+      boards = contents
+
+    }
+
+    // extract & set type & value of content, or blank if not present
+    const typ   = contents[1] ? contents[1]["type"] : ""
+    const value = contents[1] ? contents[1]["value"] : ""
+
+    return {
+      "category": category,
+      "contents": contents,
+      "type":     typ,
+      "value":    value,
+      "boards":   boards
+    }
+  }
+
+
+  /*
    * handleResponse
    * Handles the response from the bogl API w/ the replExpression that produced it
    *
    * replExpression : Expr used to produce this response
-   * responses :      Encoded reponse from the API
+   * response :       Encoded reponse from the API
    */
-  const handleResponse = (replExpression: string, responses: any) => {
-    // get recent decoded response
-    let decoded = decodeResponse(responses)
+  const handleResponse = (replExpression: string, response: any) => {
+    // get content from the response
+    let content = extractContent(response)
 
-    // Check for exception cases
-    if(decoded["category"] === "SpielPrompt") {
+    // add any decoded boards, otherwise use ""
+    let respStr = ""
+    if(content["boards"].length > 0 && content["boards"] instanceof Array) {
+      // add all decoded boards
+      respStr = content["boards"].map(decodeValue).join("") + "\n\n"
+
+    }
+
+    if(content["category"] === "SpielPrompt") {
       // Prompt for input
-      return handlePrompt(replExpression, decoded)
+      return respStr + handlePrompt(replExpression, content)
 
-    } else if(decoded["category"] === "SpielTypeError") {
+    } else if(content["category"] === "SpielTypeError") {
       // Type error
-      return handleTypeError(decoded)
+      return respStr + handleTypeError(content)
 
-    } else if(decoded["category"] === "SpielParseError") {
+    } else if(content["category"] === "SpielParseError") {
       // Parse Error
-      return handleLanguageError(decoded)
+      return respStr + handleLanguageError(content)
 
-    } else if(decoded["category"] === "SpielRuntimeError") {
+    } else if(content["category"] === "SpielRuntimeError") {
       // Runtime Error
-      return handleRuntimeError(decoded)
+      return respStr + handleRuntimeError(content)
+
+    } else if(content["category"] === "SpielValue") {
+      // BoGL value
+      try {
+        return respStr + handleValue(content)
+
+      } catch (error) {
+        // handle decoding errors
+        return decodeError(error, 200)
+
+      }
 
     } else {
-      // Regular BoGL value
-      return handleValue(decoded)
+      // unrecognized category
+      console.error("Invalid category in handleResponse of " + content["category"])
+      throw ReferenceError("Unrecognized category. Something went wrong, please try again.")
 
     }
   }
@@ -242,11 +276,8 @@ const Repl = (props) => {
    * replExpression: Expression to run the Repl on
    * replPrint:      Callback function to print the response in the Repl
    */
-  const runRepl = (replExpression: string, replPrint: any) => {
+  const runRepl = (replExpression: string, replPrint: any, requester) => {
       let respStatus = 0;
-
-      // check to ':t ' to request an expression result type
-      let regex = /^:t\s+/;
 
       if (inputMode) {
           // push command to input buffer
@@ -256,15 +287,17 @@ const Repl = (props) => {
 
       }
 
-      if(replExpression.match(regex)) {
+      // check to ':t ' to request an expression result type
+      const patt = /^:t\s+/;
+      if(replExpression.match(patt)) {
         // pull off the prefaced type instruction,
         // and note that we would like to report a type once done
-        replExpression = replExpression.replace(regex, '');
+        replExpression = replExpression.replace(patt, '');
         shouldReportExprType = true;
 
       }
 
-      apiRequestRunCode(fetch, props.preludeCode, props.programCode, replExpression, inputBuffer)
+      apiRequestRunCode(requester, props.preludeCode, props.programCode, replExpression, inputBuffer)
       .then(function(res) {
         // store & decode the response
         respStatus = res.status;
@@ -274,17 +307,40 @@ const Repl = (props) => {
         // print the decoded response
         replPrint(handleResponse(replExpression,result));
 
+        // always turn off type reporting as well
+        shouldReportExprType = false
+
       }).catch((error) => {
         // print the decoded error
         replPrint(decodeError(error,respStatus))
 
         if(inputMode) {
           // in the case of input, assume we need to pop from the buffer to fix this
-          popFromInputBuffer();
-          replPrint("Your last input was discarded.")
+          replPrint(popFromInputBufferWithMsg())
 
         }
+
+        // always turn off type reporting as well
+        shouldReportExprType = false
       });
+
+  }
+
+  // Testing hook
+  if(props.testingHook) {
+    // evalute with the following expr
+    const mockRequest = (a,b) => {
+      return new Promise(resolve => {
+        let dat = {
+          status: 200,
+          json: () => props.testingHook.responses
+        }
+        return resolve(dat)
+      })
+    }
+    runRepl(props.testingHook.expr, props.testingHook.print, mockRequest);
+
+    return (<></>)
 
   }
 
@@ -302,7 +358,7 @@ const Repl = (props) => {
           }}
           commandPassThrough={(cmd: any, print) => {
               let expr = (cmd instanceof Array) ? cmd.join(" ") : cmd;
-              runRepl(expr, print);
+              runRepl(expr, print, fetch);
 
           }}
           allowTabs={false}

@@ -39,11 +39,14 @@ it('Test decode Bools', () => {
     value: false
   })).toEqual("False")
 
-  // any other val will be coerced to a bool...
-  expect(d.decodeValue({
-    type: "Bool",
-    value: 123
-  })).toEqual("True")
+  // any other val will fail to coerce w/ an exception
+  expect(() => {
+    d.decodeValue({
+      type: "Bool",
+      value: 123
+    });
+  }).toThrow()
+
 });
 
 
@@ -55,8 +58,8 @@ it('Test decode Symbols', () => {
 
   expect(d.decodeValue({
     type: "Symbol",
-    value: "A"
-  })).toEqual("A")
+    value: "Xy0Z"
+  })).toEqual("Xy0Z")
 
   expect(d.decodeValue({
     type: "Symbol",

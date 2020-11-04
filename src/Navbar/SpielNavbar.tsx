@@ -54,8 +54,8 @@ const SpielNavbar = (props) => {
     function getBoGLExamples() {
         let navitems: Array<JSX.Element> = [];
         for(let i = 0; i < boglExamples.length; i++) {
-          // TODO set this up so that the updatd examples populate back to the other router
-          navitems.push(<NavDropdown.Item key={"boglexample-" + i.toString()} onClick={() => props.setProrgramCode(boglExamples[i][1]) }>{ boglExamples[i][0] }</NavDropdown.Item>);
+          // TODO set this up so that the updated examples populate back to the other router
+          navitems.push(<NavDropdown.Item key={"boglexample-" + i.toString()} onClick={() => props.setProgramCode(boglExamples[i][1]) }>{ boglExamples[i][0] }</NavDropdown.Item>);
         }
         return navitems;
     }
