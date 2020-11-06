@@ -35,7 +35,6 @@ const decodeValue = (decoded: Array<any>) => {
 
   } else {
     // fallback
-    //console.error("Unable to decode value for type " + decoded["type"])
     throw ReferenceError("Unrecognized Value of type " + decoded["type"])
 
   }
@@ -142,8 +141,7 @@ const decodeError = (error, respStatus : number) => {
 
   } else {
     // general error
-    //console.dir(error)
-    return " 🤖 BoGL Says: An error occurred: " + error + " ";
+    return Err.BoglGenError + error + " ";
 
   }
 }

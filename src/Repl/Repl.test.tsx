@@ -31,6 +31,19 @@ it('Verify 5 returns', () => {
   })
 });
 
+// Test verifies inputting 5, and getting the expected response, should parse back to '5' correctly
+it('Verify many spaces in front of an Expr is OK', () => {
+  getReplResponse("     5    ", [
+    {"tag":"SpielTypes","contents": [] },
+    {"tag":"SpielValue","contents": [
+      [],
+      {"value":5,"type":"Int"}
+    ]
+  }], (resp) => {
+    expect(resp).toEqual("5")
+  })
+});
+
 
 it('Verify :t prompts Int type', () => {
   getReplResponse(":t 5", [

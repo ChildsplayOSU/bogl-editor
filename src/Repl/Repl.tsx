@@ -69,7 +69,7 @@ const Repl = (props) => {
    */
   const pushToInputBuffer = (nextInput: string) => {
     let cpy = inputBuffer
-    cpy.push({"input":nextInput})
+    cpy.push(nextInput)
     setInputBuffer(cpy)
   }
 
@@ -175,6 +175,17 @@ const Repl = (props) => {
 
 
   /*
+   * filterDuplicateBoards
+   * Filters out duplicate decoded boards, only works on the strings, not the arrays
+   * TODO: This should be patched on the backend in the future, this is a hack in the meantime
+   * Once this if fixed in the way BoGL returns boards, this can be safely removed
+   */
+  const filterDuplicateBoards = (decodedBoards) => {
+    return decodedBoards.filter((val,index) => decodedBoards.indexOf(val) === index)
+  }
+
+
+  /*
    * extractContent
    * Extracts the content for values from the response
    *
@@ -225,34 +236,33 @@ const Repl = (props) => {
     // get content from the response
     let content = extractContent(response)
 
-    // add any decoded boards, otherwise use ""
-    let respStr = ""
-    if(content["boards"].length > 0 && content["boards"] instanceof Array) {
-      // add all decoded boards
-      respStr = content["boards"].map(decodeValue).join("") + "\n\n"
-
-    }
-
     if(content["category"] === "SpielPrompt") {
       // Prompt for input
+      // This is the only time we print boards that are side-effects of 'place' operations
+      let respStr = ""
+      if(content["boards"].length > 0 && content["boards"] instanceof Array) {
+        // add all decoded boards
+        respStr = filterDuplicateBoards(content["boards"].map(decodeValue)).join("") + "\n\n"
+      }
       return respStr + handlePrompt(replExpression, content)
 
     } else if(content["category"] === "SpielTypeError") {
       // Type error
-      return respStr + handleTypeError(content)
+      return handleTypeError(content)
 
     } else if(content["category"] === "SpielParseError") {
       // Parse Error
-      return respStr + handleLanguageError(content)
+      return handleLanguageError(content)
 
     } else if(content["category"] === "SpielRuntimeError") {
       // Runtime Error
-      return respStr + handleRuntimeError(content)
+      return handleRuntimeError(content)
 
     } else if(content["category"] === "SpielValue") {
       // BoGL value
       try {
-        return respStr + handleValue(content)
+        // attempt to decode, a bad bool value can cause an exception to throw
+        return handleValue(content)
 
       } catch (error) {
         // handle decoding errors
