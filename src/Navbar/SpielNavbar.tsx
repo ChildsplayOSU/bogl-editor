@@ -17,11 +17,6 @@ const SpielNavbar = (props) => {
 
     let [didShare, setDidShare] = React.useState(false);
 
-    // TODO can be removed if examples don't come back (has no impact on sharing), these are vestiges, are are used in the former examples category
-    // keeps track of the last code & prelude
-    //let [code, setCode] = React.useState(false);
-    //let [prelude, setPrelude] = React.useState(false);
-
     // Themes available
     const themes: Array<string> = ["default", "midnight", "gruvbox-dark", "solarized", "nord"];
 
@@ -33,33 +28,6 @@ const SpielNavbar = (props) => {
         }
         return navitems;
     }
-
-    // TODO can be removed if examples don't come back
-    // examples available
-    /*
-    let boglExamples: Array<Array<string>> = [
-      // TODO BOGL Examples need to be updated
-      ["Simplest Program","-- Simple Program example\ngame Simple"],
-      ["Function", "--example of a function\ngame FunctionExample\ntype Board = Array(1,1) of Int\ntype Input = Int\n\nf : Int\nf = 1"],
-      ["Function with Parameter", "--example of a function that takes a parameter\ngame FunctionParamExample\ntype Board = Array(1,1) of Int\ntype Input = Int\n\n--adds 1 to whatever number we give this function\nf : Int -> Int\nf(x) = x + 1"],
-      ["Board","--example of a simple board\ngame BoardExample\ntype Board = Array(3,3) of Int\ntype Input = Int\n\n--a board called 'ex' where every space is 0\nex : Board\nex!(x,y) = 0"],
-      ["Simple Input","--example of taking in simple input\ngame SimpleInput\ntype Board = Array(1,1) of Int\ntype Input = Int\n\n--a function that adds 2 numbers together\nadd : Int -> Int\nadd(x) = let y = input in x + y"],
-      ["Place a Piece","--example of placing a piece on a board\ngame PlacePiece\n\ntype Board = Array(3,3) of Int\ntype\nPosition = (Int,Int)\ntype Input = Position\n\n--a new board of 0's\nb : Board\nb!(x,y) = 0\n\n-- a function to place a piece on this board\nplacePiece : Board -> Board\nplacePiece(board) = let pos = input in place(1,board,pos)"]
-    ];
-    */
-
-    // TODO can be removed if examples don't come back
-    // Generate example list to be used in drop down
-    /*
-    function getBoGLExamples() {
-        let navitems: Array<JSX.Element> = [];
-        for(let i = 0; i < boglExamples.length; i++) {
-          // TODO set this up so that the updatd examples populate back to the other router
-          navitems.push(<NavDropdown.Item key={"boglexample-" + i.toString()} onClick={() => props.setCode(boglExamples[i][1]) }>{ boglExamples[i][0] }</NavDropdown.Item>);
-        }
-        return navitems;
-    }
-    */
 
 
     function getShareOption() {
@@ -83,7 +51,7 @@ const SpielNavbar = (props) => {
       let fileName = props.downloadAsProgram ? "Program.bgl" : "Prelude.bgl";
       let content = props.downloadAsProgram ? props.lastCode : props.lastPrelude;
 
-      items.push(<Download content={content} link={fileName}/>);
+      items.push(<Download key="downloadLink" content={content} link={fileName}/>);
 
       // parse out the params from the url
       const url = window.location.search;
@@ -126,23 +94,6 @@ const SpielNavbar = (props) => {
     }
 
     // Uses React-Router to change page
-
-    // TODO can be removed if examples don't come back
-    // TODO after the 'Themes' dropdown, this can be added
-    // when the examples are ready.
-    // ALSO needs to uncomment the updated examples afterwards
-    /*
-    <NavDropdown title="Examples" id="basic-nav-dropdown">
-        {getBoGLExamples()}
-    </NavDropdown>
-    */
-
-    // TODO can be removed if examples don't come back
-    /*
-    Old 'Editor' link, redundant, went right before 'Themes' below
-    <Nav.Link as={Link} to="/">Editor</Nav.Link>
-    */
-
     return (
         <Navbar bg="danger" variant="dark" expand="lg" fixed="top">
             <Navbar.Brand><img src="favicon.ico" className="icon" width="26" height="26" alt="BoGL Logo"/> BoGL: Board Game Language</Navbar.Brand>
