@@ -4,3 +4,5 @@ node_js:
 
 dist: xenial
 os: linux
+
+install: npm install
