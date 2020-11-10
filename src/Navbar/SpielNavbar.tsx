@@ -48,7 +48,7 @@ const SpielNavbar = (props) => {
 
       }
 
-      let fileName = props.downloadAsProgram ? "Program.bgl" : "Prelude.bgl";
+      let fileName = props.downloadAsProgram ? "Program.bgl.txt" : "Prelude.bgl.txt";
       let content = props.downloadAsProgram ? props.lastCode : props.lastPrelude;
 
       items.push(<Download key="downloadLink" content={content} link={fileName}/>);
