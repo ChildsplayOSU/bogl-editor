@@ -105,6 +105,10 @@ const SpielNavbar = (props) => {
                         {getThemes()}
                     </NavDropdown>
 
+                    <Nav.Link className="align-navlink" href="/tutorials/">
+                        Tutorials
+                    </Nav.Link>
+
                 </Nav>
                 <Form inline>
                   {getShareOption()}
