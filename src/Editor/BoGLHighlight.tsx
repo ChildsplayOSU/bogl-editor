@@ -194,11 +194,11 @@ function BoGLHighlight() {
 
     // highlight types
     setType("builtin",
-      ["Bool","False","True","Int","Board","Array","Input","Player"]);
+      ["Bool","False","True","Int","Board","Array","Input","Player","Content"]);
 
     // highlight built-in functions
     setType("builtin",
-      ["input","place","remove","countBoard","countCol","countRow","countDiag","isFull","inARow","next","not","or","and","less"]);
+      ["input","place","countBoard","countCol","countRow","countDiag","isFull","inARow","not","or","and"]);
 
     return wkw;
   })();
