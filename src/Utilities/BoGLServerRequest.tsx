@@ -74,7 +74,7 @@ const apiRequestLoad = (request, id) => {
  * expr:        Expression to evaluate in the context of the code & prelude (string)
  * inputBuffer: Array of strings to send as input ([string])
  */
-const apiRequestRunCode = (request, prelude, prog, expr, inputBuffer) => {
+const apiRequestRunCode = (request, prelude, prog, expr, inputBuffer, programName) => {
   return request(BOGL_API+'/runCode', {
       method: 'POST',
       headers: postHeaders,
@@ -83,7 +83,7 @@ const apiRequestRunCode = (request, prelude, prog, expr, inputBuffer) => {
           file: prog,       // program contents
           input: expr,      // expr to evaluate in the context of prelude & prog
           buffer: inputBuffer,  // input buffer to utilize for 'input' refs
-          programName: "Program"
+          programName: programName  // program name to use
       }),
   })
 }

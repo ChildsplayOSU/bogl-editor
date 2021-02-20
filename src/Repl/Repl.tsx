@@ -9,6 +9,7 @@
 import React, { useState } from 'react';
 import Terminal from 'terminal-in-react';
 import {apiRequestRunCode} from '../Utilities/BoGLServerRequest';
+import {extractGameNameFromProgram} from '../Utilities/ProgramUtils';
 import {decodeValue,decodeExprType,decodeError} from './Decode';
 
 
@@ -307,7 +308,17 @@ const Repl = (props) => {
 
       }
 
-      apiRequestRunCode(requester, props.preludeCode, props.programCode, replExpression, inputBuffer)
+      let pc = props.programCode;
+      let pCheck = pc.replaceAll(/(?:--[^\n]*)/g,'').trim();
+      if(pCheck == "") {
+        // empty program, substitute a default program so we can run just expressions
+        pc = "game Expressions";
+      }
+
+      // extract game name
+      let gameName = extractGameNameFromProgram(pc)
+
+      apiRequestRunCode(requester, props.preludeCode, pc, replExpression, inputBuffer, gameName)
       .then(function(res) {
         // store & decode the response
         respStatus = res.status;

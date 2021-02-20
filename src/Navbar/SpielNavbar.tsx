@@ -10,6 +10,7 @@ import queryString from 'query-string';
 import { Icon } from 'react-icons-kit'
 import {shareAlt} from 'react-icons-kit/fa/shareAlt'
 import {undo} from 'react-icons-kit/fa/undo'
+import {extractGameNameFromProgram} from '../Utilities/ProgramUtils'
 
 import './SpielNavbar.css';
 
@@ -48,7 +49,7 @@ const SpielNavbar = (props) => {
 
       }
 
-      let fileName = props.downloadAsProgram ? "Program.bgl.txt" : "Prelude.bgl.txt";
+      let fileName = props.downloadAsProgram ? extractGameNameFromProgram(props.lastCode) + ".bgl.txt" : "Prelude.bgl.txt";
       let content = props.downloadAsProgram ? props.lastCode : props.lastPrelude;
 
       items.push(<Download key="downloadLink" content={content} link={fileName}/>);
