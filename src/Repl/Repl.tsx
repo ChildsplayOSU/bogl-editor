@@ -309,14 +309,17 @@ const Repl = (props) => {
       }
 
       let pc = props.programCode;
-      let pCheck = pc.replaceAll(/(?:--[^\n]*)/g,'').trim();
-      if(pCheck == "") {
-        // empty program, substitute a default program so we can run just expressions
-        pc = "game Expressions";
+      // only run this when we have program code (in testing this is not defined)
+      if(pc) {
+        let pCheck = pc.replaceAll(/(?:--[^\n]*)/g,'').trim();
+        if(pCheck === "") {
+          // empty program, substitute a default program so we can run just expressions
+          pc = "game Expressions";
+        }
       }
 
-      // extract game name
-      let gameName = extractGameNameFromProgram(pc)
+      // extract game name, and in the case of an undefined program (when testing), supply a default definition to work with
+      let gameName = extractGameNameFromProgram(pc ? pc : "game DefaultTestingDefinition")
 
       apiRequestRunCode(requester, props.preludeCode, pc, replExpression, inputBuffer, gameName)
       .then(function(res) {
