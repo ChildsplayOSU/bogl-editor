@@ -310,7 +310,7 @@ const Repl = (props) => {
 
       let pc = props.programCode;
       // only run this when we have program code (in testing this is not defined)
-      if(pc) {
+      if(pc !== undefined) {
         let pCheck = pc.replaceAll(/(?:--[^\n]*)/g,'').trim();
         if(pCheck === "") {
           // empty program, substitute a default program so we can run just expressions
@@ -319,7 +319,7 @@ const Repl = (props) => {
       }
 
       // extract game name, and in the case of an undefined program (when testing), supply a default definition to work with
-      let gameName = extractGameNameFromProgram(pc ? pc : "game DefaultTestingDefinition")
+      let gameName = extractGameNameFromProgram(pc !== undefined ? pc : "game DefaultTestingDefinition");
 
       apiRequestRunCode(requester, props.preludeCode, pc, replExpression, inputBuffer, gameName)
       .then(function(res) {
