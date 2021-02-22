@@ -9,7 +9,7 @@
 import React, { useState } from 'react';
 import Terminal from 'terminal-in-react';
 import {apiRequestRunCode} from '../Utilities/BoGLServerRequest';
-import {extractGameNameFromProgram} from '../Utilities/ProgramUtils';
+import {extractGameNameFromProgram,removeComments} from '../Utilities/ProgramUtils';
 import {decodeValue,decodeExprType,decodeError} from './Decode';
 
 
@@ -311,15 +311,15 @@ const Repl = (props) => {
       let pc = props.programCode;
       // only run this when we have program code (in testing this is not defined)
       if(pc !== undefined) {
-        let pCheck = pc.replaceAll(/(?:--[^\n]*)/g,'').trim();
+        let pCheck = removeComments(pc)
         if(pCheck === "") {
           // empty program, substitute a default program so we can run just expressions
           pc = "game Expressions";
         }
       }
 
-      // extract game name, and in the case of an undefined program (when testing), supply a default definition to work with
-      let gameName = extractGameNameFromProgram(pc !== undefined ? pc : "game DefaultTestingDefinition");
+      // extract game name, and in the case of an undefined program (when testing), supply a default name to work with
+      let gameName = pc !== undefined ? extractGameNameFromProgram(pc) : "DefaultTestingDefinition";
 
       apiRequestRunCode(requester, props.preludeCode, pc, replExpression, inputBuffer, gameName)
       .then(function(res) {
