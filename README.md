@@ -4,6 +4,10 @@
 
 This is the front-end for the implementation of BoGL (the Board Game Language). The front-end is an interactive HTML5 web application with a syntax editor and a REPL interface. BoGL code is written into the syntax editor, expressions are typed into the REPL, and the code & expression under evaluation are sent to the stateless back-end to produce a result.
 
+Here is what it looks like:
+
+![BoGL front-end](https://user-images.githubusercontent.com/6590681/119240025-0b5e7300-bb02-11eb-9b8f-f44a77239b70.png)
+
 If you're looking for the stateless back-end, including the interpreter for BoGL (syntax, typechecker, evaluator), then you can find the repository for that project [here](https://github.com/The-Code-In-Sheep-s-Clothing/bogl).
 
 You can also visit our [informational website](https://bogl.engr.oregonstate.edu/tutorials) to learn more about our language.
