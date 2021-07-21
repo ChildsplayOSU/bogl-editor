@@ -19,6 +19,9 @@ Libraries used:
 * [terminal-in-react](https://github.com/nitin42/terminal-in-react)
 
 ## Setting up a Development Environment
+
+If you are developing on any part of the BoGL stack, you can read our [technical documentation](https://bogl.engr.oregonstate.edu/technical/).
+
 - Install [Stack](https://docs.haskellstack.org/en/stable/README/), which is required for building the language and backend itself.
 - Install [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) if you don't already have it.
 - Ensure that you are running a recent version of node by checking `node --version` against the [current node releases](https://nodejs.org/en/).
