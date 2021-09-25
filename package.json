@@ -26,11 +26,11 @@
     "react-icons-kit": "^1.3.1",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.3.0",
-    "terminal-in-react": "git+https://github.com/The-Code-In-Sheep-s-Clothing/terminal-in-react-bogl.git",
+    "terminal-in-react": "git+https://github.com/ChildsplayOSU/terminal-in-react-bogl.git",
     "webpack": "4.41.2"
   },
   "scripts": {
-    "setup": "npm install && cd .. && git clone https://github.com/The-Code-In-Sheep-s-Clothing/bogl.git && cd bogl && stack build && stack install",
+    "setup": "npm install && cd .. && git clone https://github.com/ChildsplayOSU/bogl.git && cd bogl && stack build && stack install",
     "start": "PORT=5168 react-scripts start",
     "startProduction": "(react-scripts start &>/dev/null &) && spielserver 5174",
     "stopProduction": "react-scripts stop",
